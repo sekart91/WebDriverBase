@@ -15,9 +15,8 @@ public class BaseDriverClass {
 	public void BaseDriverClass1() throws InterruptedException
 	{
 		System.out.println("Starting BaseDrivers");
-//	    BaseDriverHelper baseDriverHelper = ;
 	    baseDriverHelper.startServer();
-	    baseDriverHelper.startDriver("firefox");
+	    baseDriverHelper.startDriver();
 	}
 	
 	public WebDriver getDriver()
@@ -31,8 +30,7 @@ public class BaseDriverClass {
 	{
 		System.out.println("Stopping BaseDrivers");
 		baseDriverHelper.stopDriver();
-		baseDriverHelper.stopServer();
-		
+		baseDriverHelper.stopServer();		
 	}
 	
  }

@@ -1,11 +1,17 @@
 package webdriverbasehelpers;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import net.lightbody.bmp.proxy.ProxyServer;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -18,10 +24,9 @@ public class BaseDriverHelper {
 	public void startServer() throws InterruptedException
 	   {
 		  	proxyServer = new ProxyServer(0); //port number equals to zero starts the server in dynamic port
-	       try {
+		  	try {
 	       	proxyServer.start();
-	       	System.out.println("Server - "+ proxyServer.getPort());
-	       	
+	       
 	      // Start the server in specified host and port - TODO
 //	      Map<String, String> options = new HashMap<String, String>();
 //	      options.put("httpProxy", "127.0.0.1" + ":" + "3000");
@@ -34,69 +39,56 @@ public class BaseDriverHelper {
 	       }
 	   }
 	
-	   public void startDriver(String browserName) throws InterruptedException
+	   public void startDriver() throws InterruptedException
 	   {
 		   try{
-			
-			DesiredCapabilities cap = null;
-			if(browserName.equalsIgnoreCase("chrome"))
-			{
-				cap = setChromeDriver(cap);
-				driver = new ChromeDriver(cap);
-			}
-			else if(browserName.equalsIgnoreCase("firefox"))
-			{
-				cap = setFirefoxDriver(cap);
-				driver = new FirefoxDriver(cap);
-			}
-			
-			createProxy(cap);	
+			    String browserName = System.getProperty("webdriver.browserName", "Chrome");  // Setting the chrome as default browser if no browser name is specified 
+				System.out.println("browserName -- "+ browserName);
+				DesiredCapabilities cap = null;
+				SetBrowserCapabilities setBrowserCapabilities = new SetBrowserCapabilities();
+				if(browserName.equalsIgnoreCase("chrome"))
+				{
+					cap = setBrowserCapabilities.setChromeDriver(cap);
+		   			if(cap != null)
+		   				driver = new ChromeDriver(cap);
+		   			else
+		   				System.out.println("Capabilities return as Null");
+				}
+				else if(browserName.equalsIgnoreCase("ie"))
+				{
+					cap = setBrowserCapabilities.setIEDriver(cap);
+		   			if(cap != null)
+						driver = new InternetExplorerDriver();
+		   			else
+		   				System.out.println("Capabilities return as Null");
+				}
+				else if(browserName.equalsIgnoreCase("firefox"))
+				{
+					cap = setBrowserCapabilities.setFirefoxDriver(cap);
+		   			if(cap != null)
+						driver = new FirefoxDriver(cap);
+		   			else
+		   				System.out.println("Capabilities return as Null");
+				}
+				else if(browserName.equalsIgnoreCase("phontomjs"))
+				{
+					cap = setBrowserCapabilities.setPhomtomJsDriver(cap);
+		   			if(cap != null)
+						driver = new PhantomJSDriver(cap);
+		   			else
+		   				System.out.println("Capabilities return as Null");
+				}
+					
+				System.out.println("Starting the Browser -- "+ cap.getBrowserName());
+				
+				createProxy(cap);	
+				printCapabilities(cap);
 			
 		   }catch ( Exception e){
 			   e.printStackTrace();
 		   }
 		}
 	    
-	   	public DesiredCapabilities setChromeDriver( DesiredCapabilities cap)
-	   	{
-	   		try{
-	   		 String chromeDriverLocation = "C:\\Users\\mm\\Downloads\\chromedriver_win32";
-			 System.out.println("chromeDriverLocation -- "+ chromeDriverLocation);
-			 System.setProperty(" webdriver.chrome.driver", chromeDriverLocation);
-
-			 cap = DesiredCapabilities.chrome();
-			 System.out.println("Starting the Browser -- "+ cap.getBrowserName());
-			   
-	   		}catch(Exception e){
-	   			e.printStackTrace();
-	   		}
-	   		return cap;
-	   	}
-	   	
-	   	public DesiredCapabilities setFirefoxDriver(DesiredCapabilities cap)
-	   	{
-	   		try{
-	   			cap = DesiredCapabilities.firefox();   	     
-	   			System.out.println("Starting the Browser -- "+ cap.getBrowserName());
-	   		 
-	   		}catch(Exception e){
-	   			e.printStackTrace();
-	   		}
-	   		return cap;
-	   	}
-	   	
-	   	public DesiredCapabilities setIEDriver(DesiredCapabilities cap)
-	   	{
-	   		try{
-	   			cap = DesiredCapabilities.internetExplorer();   	     
-	   			System.out.println("Starting the Browser -- "+ cap.getBrowserName());
-	   		 
-	   		}catch(Exception e){
-	   			e.printStackTrace();
-	   		}
-	   		return cap;
-	   	}
-	   	
 	    private Proxy createProxyObject() {
 	        try {
 	          proxy = proxyServer.seleniumProxy();
@@ -137,7 +129,7 @@ public class BaseDriverHelper {
 	    {
 	        if (driver != null) 
 	        {
-	        	driver.quit();
+	        	this.driver.quit();
 	        	this.driver = null;
 	        }
 	    }
@@ -147,4 +139,13 @@ public class BaseDriverHelper {
 	    	return this.driver;
 	    }
 	    
+	    private void printCapabilities(Capabilities capabilities)
+	    {
+	        Map<String, ?> map = capabilities.asMap();
+	        for (Entry<String, ?> entry : map.entrySet()) {
+	          String key = entry.getKey();
+	          Object value = entry.getValue();
+	          System.out.println("\t\tkey is " + key + "\t\tvalue is " + value);
+	        }
+	    }	    
 }
