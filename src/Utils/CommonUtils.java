@@ -1,5 +1,7 @@
 package Utils;
 
+import java.io.File;
+
 public class CommonUtils {
 	
 	public String getCurrentWorkingDirectory()
@@ -12,4 +14,26 @@ public class CommonUtils {
 		}
 		return workingDir;
 	}
+	
+	 public File getBrowserExecutable(String path, String fileName)
+	 {
+		 try{
+			 File fileDirectory = new File(path);
+			 File[] listOfFiles = fileDirectory.listFiles();
+			 if(listOfFiles.length != 0)
+			 {
+				 for(int i = 0; i < listOfFiles.length; i++)
+				 {
+//					 System.out.println("File " + listOfFiles[i].getName());
+					 if(listOfFiles[i].getName().contains(fileName) && listOfFiles[i].canExecute())
+						 return listOfFiles[i];
+				 }
+			 }
+			
+		 }catch(Exception e){
+			 e.printStackTrace();
+		 }
+		 return new File("tempfile");
+	 }
+
 }

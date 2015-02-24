@@ -14,6 +14,7 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.browserlaunchers.*;
 
 public class BaseDriverHelper {
 	
@@ -70,7 +71,7 @@ public class BaseDriverHelper {
 		   			else
 		   				System.out.println("Capabilities return as Null");
 				}
-				else if(browserName.equalsIgnoreCase("phontomjs"))
+				else if(browserName.equalsIgnoreCase("phantomjs"))
 				{
 					cap = setBrowserCapabilities.setPhomtomJsDriver(cap);
 		   			if(cap != null)
