@@ -14,6 +14,9 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.browserlaunchers.*;
+
+import CustomExceptions.MyCoreExceptions;
 
 public class BaseDriverHelper {
 	
@@ -52,7 +55,7 @@ public class BaseDriverHelper {
 		   			if(cap != null)
 		   				driver = new ChromeDriver(cap);
 		   			else
-		   				System.out.println("Capabilities return as Null");
+		   				throw new MyCoreExceptions("Capabilities return as Null");
 				}
 				else if(browserName.equalsIgnoreCase("ie"))
 				{
@@ -60,7 +63,7 @@ public class BaseDriverHelper {
 		   			if(cap != null)
 						driver = new InternetExplorerDriver();
 		   			else
-		   				System.out.println("Capabilities return as Null");
+		   				throw new MyCoreExceptions("Capabilities return as Null");
 				}
 				else if(browserName.equalsIgnoreCase("firefox"))
 				{
@@ -68,15 +71,15 @@ public class BaseDriverHelper {
 		   			if(cap != null)
 						driver = new FirefoxDriver(cap);
 		   			else
-		   				System.out.println("Capabilities return as Null");
+		   				throw new MyCoreExceptions("Capabilities return as Null");
 				}
-				else if(browserName.equalsIgnoreCase("phontomjs"))
+				else if(browserName.equalsIgnoreCase("phantomjs"))
 				{
 					cap = setBrowserCapabilities.setPhomtomJsDriver(cap);
 		   			if(cap != null)
 						driver = new PhantomJSDriver(cap);
 		   			else
-		   				System.out.println("Capabilities return as Null");
+		   				throw new MyCoreExceptions("Capabilities return as Null");
 				}
 					
 				System.out.println("Starting the Browser -- "+ cap.getBrowserName());
