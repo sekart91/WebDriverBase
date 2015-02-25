@@ -14,7 +14,7 @@ public class LaunchDriverTest extends BaseDriverClass {
 	public void beforeMethod()
 	{
 		//Set the browser name for test
-		System.setProperty("webdriver.browserName", "phantomjs");
+		System.setProperty("webdriver.browserName", "chrome");
 	}
 	
 	@Test
@@ -31,7 +31,8 @@ public class LaunchDriverTest extends BaseDriverClass {
 //			 System.out.println("----Current url ---"+driver.getCurrentUrl());
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			Assert.fail("Exception occured");
 		}  
 	}
 
