@@ -2,15 +2,13 @@ package test;
 
 import java.util.HashMap;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
-import CustomExceptions.MyCoreExceptions;
-import utils.csvparser.CSVParser;
 import webdriverbase.BaseDriverClass;
+import CustomExceptions.MyCoreExceptions;
 
 public class LaunchDriverTest extends BaseDriverClass {
 	
@@ -43,16 +41,30 @@ public class LaunchDriverTest extends BaseDriverClass {
 	@Test ( description = "csv parser test")
 	public void csvParserTest() throws MyCoreExceptions
 	{
-		HashMap <String , String[]> csvData = CSVParser.getCSVDataHash("testcsv");
+		HashMap <String , String[]> csvData = getCSVDataHash("testcsv");
 		Assert.assertNotNull(csvData, "CSV Data hash returned as Null");
 		
-		HashMap <String , String> csvColumnIndex = CSVParser.getCSVHeaderHash();
+		HashMap <String , String> csvColumnIndex = getCSVHeaderHash();
 		Assert.assertNotNull(csvColumnIndex, "CSV Column Index hash returned as Null");
 		
 		for(String key : csvData.keySet())
 		{
 			String[] rowArray = csvData.get(key);
 			System.out.println("-------------\n" + getCSVData(rowArray, csvColumnIndex.get("name")) );
+		}
+		
+//		String[] keyArr = {"id","name","propid"};
+		Integer[] keyArr= {0,1,2};
+		HashMap <String , String[]> csvData_with_multikey = getCSVDataHash("testcsv", keyArr);
+		Assert.assertNotNull(csvData_with_multikey, "CSV Data hash returned as Null");
+		
+		HashMap <String , String> csvColumnIndex_with_multikey = getCSVHeaderHash();
+		Assert.assertNotNull(csvColumnIndex_with_multikey, "CSV Column Index hash returned as Null");
+		
+		for(String key : csvData_with_multikey.keySet())
+		{
+			String[] rowArray = csvData_with_multikey.get(key);
+			System.out.println("\n key - "+ key + "\n"+ getCSVData(rowArray, csvColumnIndex_with_multikey.get("name")) );
 		}
 	}
 
