@@ -7,7 +7,7 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
-import utils.csvparser.CSVParser;
+import Utils.csvparser.CSVParser;
 import webdriverbasehelpers.BaseDriverHelper;
 import CustomExceptions.MyCoreExceptions;
 
