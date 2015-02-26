@@ -6,7 +6,7 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import constants.WebDriverConstants;
-import Utils.CommonUtils;
+import utils.CommonUtils;
 
 public class SetBrowserCapabilities {
 	
