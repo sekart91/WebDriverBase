@@ -10,6 +10,5 @@
 	<classpathentry kind="lib" path="External Jars/phantomjsdriver-1.2.1.jar"/>
 	<classpathentry kind="lib" path="External Jars/selenium-java-2.44.0.jar"/>
 	<classpathentry kind="lib" path="External Jars/selenium-server-standalone-2.44.0.jar"/>
->>>>>>> CSV Parser Support added
 	<classpathentry kind="output" path="bin"/>
 </classpath>
