@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import utils.CommonUtils;
 import CustomExceptions.MyCoreExceptions;
@@ -14,20 +15,21 @@ import constants.CSVParserConstants;
 
 public class CSVParser {
 	
-	public static HashMap<String, String[]> csvDataHash;
-	public static HashMap<String, String> csvColumnIndexHash;
-	public static int headerRow = 0;
+	public HashMap<String, String[]> csvDataHash;
+	public HashMap<String, String> csvColumnIndexHash;
+	public boolean headerRow = true;
 	
-	static CommonUtils utils ;
+	CommonUtils utils ;
 	
-	public static void initializeConstans()
+	public void initializeConstans()
 	{
 		utils = new CommonUtils();
 		csvDataHash = new HashMap<String, String[]>();
 		csvColumnIndexHash = new HashMap<String,String>(); 
+		headerRow = true;
 	}
 
-	public static HashMap<String, String[]> getCSVDataHash(String fileName)
+	public HashMap<String, String[]> getCSVDataHash(String fileName)
 	{
 		try{
 			initializeConstans();
@@ -38,8 +40,11 @@ public class CSVParser {
 			 List<String[]> rowEntries = reader.readAll();
 			 for(String[] row : rowEntries)
 			 {
-				 if(headerRow ++ == 0)
+				 if(headerRow)
+				 {
 					 createCSVHeaderHash(row);
+					 headerRow = false;
+				 }
 				 else
 					 csvDataHash.put(row[0], row);
 			 }
@@ -51,7 +56,7 @@ public class CSVParser {
 	}
 
 	@SuppressWarnings("resource")
-	public static HashMap<String, String[]> getCSVDataHash(String fileName, int columnNumber)
+	public HashMap<String, String[]> getCSVDataHash(String fileName, int columnNumber)
 	{
 		try{
 			 initializeConstans();
@@ -63,8 +68,11 @@ public class CSVParser {
 			 
 			 for(String[] row : rowEntries)
 			 { 
-				 if(headerRow ++ == 0)
+				 if(headerRow)
+				 {
 					 createCSVHeaderHash(row);
+					 headerRow = false;
+				 }
 				 else
 					 csvDataHash.put(row[columnNumber], row);
 			 }
@@ -76,7 +84,7 @@ public class CSVParser {
 	}
 	
 	@SuppressWarnings("resource")
-	public static HashMap<String, String[]> getCSVDataHash(String fileName, String columnName)
+	public HashMap<String, String[]> getCSVDataHash(String fileName, String columnName)
 	{
 		try{
 			 initializeConstans();
@@ -91,8 +99,11 @@ public class CSVParser {
 			 
 			 for(String[] row : rowEntries)
 			 {
-				 if(headerRow ++ == 0)
+				 if(headerRow)
+				 {
 					 createCSVHeaderHash(row);
+					 headerRow = false;
+				 }
 				 else
 					 csvDataHash.put(row[columnNumber], row);
 			 }
@@ -103,28 +114,106 @@ public class CSVParser {
 		return csvDataHash;
 	}
 	
-	private static void createCSVHeaderHash(String[] row)
+	@SuppressWarnings("resource")
+	public HashMap<String, String[]> getCSVDataHash(String fileName, String[] keyArray)
+	{
+		try{
+			 initializeConstans();
+			 Integer[] columnNumber = new Integer[keyArray.length] ;
+			 CSVReader reader = new CSVReader(new FileReader(utils.getCurrentWorkingDirectory() + CSVParserConstants.PATH_TO_FILE + fileName + ".csv"));
+			 List<String[]> rowEntries = reader.readAll();
+			 
+			 for(int i=0; i< keyArray.length; i++)
+			 {
+				 columnNumber[i] = Arrays.asList(rowEntries.get(0)).indexOf(keyArray[i]);
+				 if(rowEntries.get(0).length < columnNumber[i])
+					 throw new MyCoreExceptions("Column Number Provided is out of data range in the file given");
+			 }		
+			 
+			 for(String[] row : rowEntries)
+			 {
+				 if(headerRow)
+				 {
+					 createCSVHeaderHash(row);
+					 headerRow = false;
+				 }
+				 else
+				 {
+					 String hashKey = "";
+					 hashKey =  row[Arrays.asList(rowEntries.get(0)).indexOf(keyArray[0])];
+					 for(int i=1; i < keyArray.length; i++)
+					 {
+						 hashKey = hashKey + "-"+ row[Arrays.asList(rowEntries.get(0)).indexOf(keyArray[i])];
+					 }
+					 csvDataHash.put(hashKey, row); 
+				 }					 					 
+			 }
+			 reader.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return csvDataHash;
+	}
+	
+	@SuppressWarnings("resource")
+	public HashMap<String, String[]> getCSVDataHash(String fileName, Integer[] keyArray)
+	{
+		try{
+			 initializeConstans();
+			 CSVReader reader = new CSVReader(new FileReader(utils.getCurrentWorkingDirectory() + CSVParserConstants.PATH_TO_FILE + fileName + ".csv"));
+			 List<String[]> rowEntries = reader.readAll();
+			
+			 for(String[] row : rowEntries)
+			 {
+				 if(headerRow)
+				 {
+					 createCSVHeaderHash(row);
+					 headerRow = false;
+				 }
+				 else
+				 {
+					 String hashKey = "";
+					 hashKey =  row[keyArray[0]];
+					 for(int i=1; i < keyArray.length; i++)
+					 {
+						 hashKey = hashKey + "-"+ row[keyArray[i]-1];
+					 }
+					 csvDataHash.put(hashKey, row); 
+				 }					 					 
+			 }
+			 reader.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return csvDataHash;
+	}
+	
+	private void createCSVHeaderHash(String[] row)
 	{
 		try{
 			for(int i=0; i<row.length; i++)
 			{
 				csvColumnIndexHash.put(row[i], String.valueOf(i));
 			}
+//			printHash(csvColumnIndexHash);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
 	
-	public static HashMap<String,String> getCSVHeaderHash() throws MyCoreExceptions
+	public HashMap<String,String> getCSVHeaderHash() throws MyCoreExceptions
 	{
 		try{
-			return csvColumnIndexHash;
+			if(csvColumnIndexHash != null)
+				return csvColumnIndexHash;
+			else
+				throw new MyCoreExceptions("CSV Column header hash is Null");
 		}catch(Exception e){
 			throw new MyCoreExceptions("Exception while getting the CSV Column header hash");
 		}
 	}		
 	
-	public static String getCSVData(String[] rowArray, String index)
+	public String getCSVData(String[] rowArray, String index)
 	{
 		String cellData = null;
 		try{
@@ -135,7 +224,7 @@ public class CSVParser {
 		return cellData;
 	}
 	
-	public static String getCSVData(String index, String[] rowArray)
+	public String getCSVData(String index, String[] rowArray)
 	{
 		String cellData = null;
 		try{
@@ -144,5 +233,13 @@ public class CSVParser {
 			e.printStackTrace();
 		}
 		return cellData;
+	}
+	
+	private void printHash(HashMap<?,?> hashmap)
+	{
+		for(Object key : hashmap.keySet())
+		{
+			System.out.println("Key : " + key.toString() + "- Value : "+ hashmap.get(key));
+		}
 	}
 }

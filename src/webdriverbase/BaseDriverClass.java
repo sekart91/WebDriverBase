@@ -15,6 +15,7 @@ import CustomExceptions.MyCoreExceptions;
 public class BaseDriverClass {
 
 	BaseDriverHelper baseDriverHelper = new BaseDriverHelper();
+	CSVParser csvParser = new CSVParser();
 	
 	@BeforeClass
 	public void startBaseDriver() throws InterruptedException
@@ -40,31 +41,41 @@ public class BaseDriverClass {
 	
 	public HashMap<String, String[]> getCSVDataHash(String fileName)
 	{
-		return CSVParser.getCSVDataHash(fileName);
+		return csvParser.getCSVDataHash(fileName);
 	}
 	
 	public HashMap<String, String[]> getCSVDataHash(String fileName, Integer columnNumber)
 	{
-		return CSVParser.getCSVDataHash(fileName, columnNumber);
+		return csvParser.getCSVDataHash(fileName, columnNumber);
 	}
 	
 	public HashMap<String, String[]> getCSVDataHash(String fileName, String columnName)
 	{
-		return CSVParser.getCSVDataHash(fileName, columnName);
+		return csvParser.getCSVDataHash(fileName, columnName);
+	}
+	
+	public HashMap<String, String[]> getCSVDataHash(String fileName, String[] rowArray)
+	{
+		return csvParser.getCSVDataHash(fileName, rowArray);
+	}
+	
+	public HashMap<String, String[]> getCSVDataHash(String fileName, Integer[] rowArray)
+	{
+		return csvParser.getCSVDataHash(fileName, rowArray);
 	}
 	
 	public HashMap<String,String> getCSVHeaderHash() throws MyCoreExceptions
 	{
-		return CSVParser.getCSVHeaderHash();
+		return csvParser.getCSVHeaderHash();
 	}
 	
 	public String getCSVData(String index, String[] rowArray)
 	{
-		return CSVParser.getCSVData(index, rowArray);
+		return csvParser.getCSVData(index, rowArray);
 	}
 	
 	public String getCSVData(String[] rowArray, String index)
 	{
-		return CSVParser.getCSVData(rowArray, index);
+		return csvParser.getCSVData(rowArray, index);
 	}
  }
