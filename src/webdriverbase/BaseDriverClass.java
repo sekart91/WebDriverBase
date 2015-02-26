@@ -7,7 +7,7 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
-import Utils.csvparser.CSVParser;
+import utils.csvparser.CSVParser;
 import webdriverbasehelpers.BaseDriverHelper;
 import CustomExceptions.MyCoreExceptions;
 
@@ -16,8 +16,8 @@ public class BaseDriverClass {
 
 	BaseDriverHelper baseDriverHelper = new BaseDriverHelper();
 	
-	@BeforeMethod
-	public void BaseDriverClass1() throws InterruptedException
+	@BeforeClass
+	public void startBaseDriver() throws InterruptedException
 	{
 		System.out.println("Starting BaseDrivers");
 	    baseDriverHelper.startServer();

@@ -1,11 +1,11 @@
-package Utils.csvparser;
+package utils.csvparser;
 
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import Utils.CommonUtils;
+import utils.CommonUtils;
 import CustomExceptions.MyCoreExceptions;
 
 import com.opencsv.CSVReader;

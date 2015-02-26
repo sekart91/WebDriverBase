@@ -9,7 +9,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import CustomExceptions.MyCoreExceptions;
-import Utils.csvparser.CSVParser;
+import utils.csvparser.CSVParser;
 import webdriverbase.BaseDriverClass;
 
 public class LaunchDriverTest extends BaseDriverClass {
