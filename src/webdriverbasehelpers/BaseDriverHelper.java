@@ -21,11 +21,13 @@ import CustomExceptions.MyCoreExceptions;
 public class BaseDriverHelper {
 	
 	WebDriver driver = null;
-	ProxyServer proxyServer;
+	ProxyServer proxyServer = null;
 	Proxy proxy;
 	
 	public void startServer() throws InterruptedException
 	   {
+			if(proxyServer !=  null)
+				return;
 		  	proxyServer = new ProxyServer(0); //port number equals to zero starts the server in dynamic port
 		  	try {
 	       	proxyServer.start();
@@ -45,6 +47,8 @@ public class BaseDriverHelper {
 	   public void startDriver() throws InterruptedException
 	   {
 		   try{
+			    if(driver != null)
+			    	return;
 			    String browserName = System.getProperty("webdriver.browserName", "Chrome");  // Setting the chrome as default browser if no browser name is specified 
 				System.out.println("browserName -- "+ browserName);
 				DesiredCapabilities cap = null;

@@ -2,6 +2,11 @@ package CustomExceptions;
 
 public class MyCoreExceptions extends Exception{
   
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7865939573625396301L;
+	
 	private String message = null;
     
     public MyCoreExceptions() {

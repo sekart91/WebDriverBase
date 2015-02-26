@@ -1,11 +1,15 @@
 package test;
 
+import java.util.HashMap;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
+import CustomExceptions.MyCoreExceptions;
+import utils.csvparser.CSVParser;
 import webdriverbase.BaseDriverClass;
 
 public class LaunchDriverTest extends BaseDriverClass {
@@ -17,7 +21,7 @@ public class LaunchDriverTest extends BaseDriverClass {
 		System.setProperty("webdriver.browserName", "chrome");
 	}
 	
-	@Test
+	@Test ( description = "webdriver start test")
 	public void launchHomeSearch()
 	{
 		 try {
@@ -34,6 +38,22 @@ public class LaunchDriverTest extends BaseDriverClass {
 //			e.printStackTrace();
 			Assert.fail("Exception occured");
 		}  
+	}
+	
+	@Test ( description = "csv parser test")
+	public void csvParserTest() throws MyCoreExceptions
+	{
+		HashMap <String , String[]> csvData = CSVParser.getCSVDataHash("testcsv");
+		Assert.assertNotNull(csvData, "CSV Data hash returned as Null");
+		
+		HashMap <String , String> csvColumnIndex = CSVParser.getCSVHeaderHash();
+		Assert.assertNotNull(csvColumnIndex, "CSV Column Index hash returned as Null");
+		
+		for(String key : csvData.keySet())
+		{
+			String[] rowArray = csvData.get(key);
+			System.out.println("-------------\n" + getCSVData(rowArray, csvColumnIndex.get("name")) );
+		}
 	}
 
 }
