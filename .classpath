@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="External Jars/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="External Jars/httpclient-4.3.6.jar"/>
+	<classpathentry kind="lib" path="External Jars/browsermob-proxy-2.0-beta-8.jar"/>
+	<classpathentry kind="lib" path="External Jars/httpcore-4.3.2.jar"/>
+	<classpathentry kind="lib" path="External Jars/selenium-server-standalone-2.44.0.jar"/>
+	<classpathentry kind="lib" path="External Jars/selenium-java-2.44.0.jar"/>
+	<classpathentry kind="lib" path="External Jars/phantomjsdriver-1.2.1.jar"/>
+	<classpathentry kind="lib" path="External Jars/opencsv-3.2.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
