@@ -10,5 +10,7 @@
 	<classpathentry kind="lib" path="External Jars/phantomjsdriver-1.2.1.jar"/>
 	<classpathentry kind="lib" path="External Jars/selenium-java-2.44.0.jar"/>
 	<classpathentry kind="lib" path="External Jars/selenium-server-standalone-2.44.0.jar"/>
+	<classpathentry kind="lib" path="External Jars/slf4j-api-1.7.10.jar"/>
+	<classpathentry kind="lib" path="External Jars/slf4j-simple-1.7.10.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

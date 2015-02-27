@@ -15,6 +15,8 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.browserlaunchers.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import CustomExceptions.MyCoreExceptions;
 
@@ -23,6 +25,8 @@ public class BaseDriverHelper {
 	WebDriver driver = null;
 	ProxyServer proxyServer = null;
 	Proxy proxy;
+	
+	Logger logger = getLogger(this.getClass());
 	
 	public void startServer() throws InterruptedException
 	   {
@@ -39,7 +43,7 @@ public class BaseDriverHelper {
 	       	
 	       } catch (Exception e) {
 	         String error = "Error while starting server.. " + e.getStackTrace();
-	         System.err.println(error);
+	         logger.error(error);
 //	         logger.error(error);
 	       }
 	   }
@@ -50,7 +54,7 @@ public class BaseDriverHelper {
 			    if(driver != null)
 			    	return;
 			    String browserName = System.getProperty("webdriver.browserName", "Chrome");  // Setting the chrome as default browser if no browser name is specified 
-				System.out.println("browserName -- "+ browserName);
+			    logger.info("browserName -- "+ browserName);
 				DesiredCapabilities cap = null;
 				SetBrowserCapabilities setBrowserCapabilities = new SetBrowserCapabilities();
 				if(browserName.equalsIgnoreCase("chrome"))
@@ -86,7 +90,7 @@ public class BaseDriverHelper {
 		   				throw new MyCoreExceptions("Capabilities return as Null");
 				}
 					
-				System.out.println("Starting the Browser -- "+ cap.getBrowserName());
+				logger.info("Starting the Browser -- "+ cap.getBrowserName());
 				
 				createProxy(cap);	
 				printCapabilities(cap);
@@ -116,7 +120,7 @@ public class BaseDriverHelper {
 				if (proxy != null)
 				      cap.setCapability(CapabilityType.PROXY, proxy);
 				else
-					System.out.println("Proxy object is null");
+					logger.info("Proxy object is null");
 		    	
 	    	}catch(Exception e){
 	    		e.printStackTrace();
@@ -152,7 +156,18 @@ public class BaseDriverHelper {
 	        for (Entry<String, ?> entry : map.entrySet()) {
 	          String key = entry.getKey();
 	          Object value = entry.getValue();
-	          System.out.println("\t\tkey is " + key + "\t\tvalue is " + value);
+	          logger.info("\t\tkey is " + key + "\t\tvalue is " + value);
 	        }
-	    }	    
+	    }
+
+		public Logger getLogger(Class<?> className) 
+		{
+			Logger logger = null;
+			try{
+				logger = LoggerFactory.getLogger(className);				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return logger;
+		}	    
 }

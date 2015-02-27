@@ -3,9 +3,10 @@ package webdriverbase;
 import java.util.HashMap;
 
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 
 import utils.csvparser.CSVParser;
 import webdriverbasehelpers.BaseDriverHelper;
@@ -14,29 +15,40 @@ import CustomExceptions.MyCoreExceptions;
 
 public class BaseDriverClass {
 
+	protected static Logger logger = LoggerFactory.getLogger(BaseDriverClass.class.getName());
+	
 	BaseDriverHelper baseDriverHelper = new BaseDriverHelper();
 	CSVParser csvParser = new CSVParser();
 	
 	@BeforeClass
 	public void startBaseDriver() throws InterruptedException
 	{
-		System.out.println("Starting BaseDrivers");
+		logger.info("Starting BaseDrivers");
 	    baseDriverHelper.startServer();
 	    baseDriverHelper.startDriver();
 	}
 	
 	public WebDriver getDriver()
 	{
-		System.out.println("Returning BaseDriver");
+		logger.info("Returning BaseDriver");
 		return baseDriverHelper.getDriver();
 	}
 	
-	@AfterSuite
-	public void afterMethod()
+	public Logger getLogger()
 	{
-		System.out.println("Stopping BaseDrivers");
-		baseDriverHelper.stopDriver();
-		baseDriverHelper.stopServer();		
+			return logger;
+	}
+	
+	public Logger getLogger(Class<?> className)
+	{
+		Logger newLogger =baseDriverHelper.getLogger(className);
+		if(newLogger != null)
+			return newLogger;
+		else
+		{
+			logger.warn("Logger initialization with class name provided failed. Returning default logger");
+			return logger;
+		}
 	}
 	
 	public HashMap<String, String[]> getCSVDataHash(String fileName)
@@ -77,5 +89,13 @@ public class BaseDriverClass {
 	public String getCSVData(String[] rowArray, String index)
 	{
 		return csvParser.getCSVData(rowArray, index);
+	}
+	
+	@AfterSuite
+	public void afterMethod()
+	{
+		System.out.println("Stopping BaseDrivers");
+		baseDriverHelper.stopDriver();
+		baseDriverHelper.stopServer();		
 	}
  }

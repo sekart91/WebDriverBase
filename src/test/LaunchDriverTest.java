@@ -3,7 +3,10 @@ package test;
 import java.util.HashMap;
 
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.testng.Assert;
+import org.testng.ITestContext;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
@@ -12,6 +15,8 @@ import CustomExceptions.MyCoreExceptions;
 
 public class LaunchDriverTest extends BaseDriverClass {
 	
+	Logger logger = getLogger(this.getClass());
+
 	@BeforeSuite
 	public void beforeMethod()
 	{
@@ -26,14 +31,15 @@ public class LaunchDriverTest extends BaseDriverClass {
 			 WebDriver driver = getDriver();
 			 driver.get("https://homesearch.com");
 			 Thread.sleep(2000);
-			 System.out.println("----Current url ---"+driver.getCurrentUrl());
+			 logger.info("Current url - "+driver.getCurrentUrl());
 			 Assert.assertEquals(driver.getCurrentUrl(), "https://homesearch.com/");
 //			 driver.findElements(By.cssSelector(".list-inline li")).get(0).click();
 //			 Thread.sleep(2000);
-//			 System.out.println("----Current url ---"+driver.getCurrentUrl());
+//			 logger.info("Current url - "+driver.getCurrentUrl());
 			
 		} catch (Exception e) {
 //			e.printStackTrace();
+			logger.error("Exception occured");
 			Assert.fail("Exception occured");
 		}  
 	}
@@ -50,7 +56,7 @@ public class LaunchDriverTest extends BaseDriverClass {
 		for(String key : csvData.keySet())
 		{
 			String[] rowArray = csvData.get(key);
-			System.out.println("-------------\n" + getCSVData(rowArray, csvColumnIndex.get("name")) );
+			logger.info("CSV Row : " + getCSVData(rowArray, csvColumnIndex.get("name")) );
 		}
 		
 //		String[] keyArr = {"id","name","propid"};
@@ -64,8 +70,7 @@ public class LaunchDriverTest extends BaseDriverClass {
 		for(String key : csvData_with_multikey.keySet())
 		{
 			String[] rowArray = csvData_with_multikey.get(key);
-			System.out.println("\n key - "+ key + "\n"+ getCSVData(rowArray, csvColumnIndex_with_multikey.get("name")) );
+			logger.info("\n key - "+ key + "\n Row value - "+ getCSVData(rowArray, csvColumnIndex_with_multikey.get("name")) );
 		}
 	}
-
 }

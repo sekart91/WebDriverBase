@@ -4,6 +4,8 @@ import java.io.File;
 
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import constants.WebDriverConstants;
 import utils.CommonUtils;
@@ -11,6 +13,7 @@ import utils.CommonUtils;
 public class SetBrowserCapabilities {
 	
 	CommonUtils utils = new CommonUtils();
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public DesiredCapabilities setChromeDriver( DesiredCapabilities cap)
    	{
@@ -26,10 +29,10 @@ public class SetBrowserCapabilities {
    		    
    			if(chromeDriver.getName().equals("tempfile"))
    			{
-   				System.out.println("Unable to find executable file");
+   				logger.warn("Unable to find executable file");
    				return null;
    			}
-//   			System.out.println("Chrome driver location -- "+ chromeDriver.getAbsolutePath());
+//   			logger.info("Chrome driver location -- "+ chromeDriver.getAbsolutePath());
    			System.setProperty("webdriver.chrome.driver", chromeDriver.getAbsolutePath());
 
    		    cap = DesiredCapabilities.chrome();
@@ -56,7 +59,7 @@ public class SetBrowserCapabilities {
    			String workingDir = utils.getCurrentWorkingDirectory();
    			if(workingDir == null)
    			{
-   				System.out.println("Working directory in null ");
+   				logger.warn("Working directory in null ");
    				return null;
    			}
    			
@@ -67,7 +70,7 @@ public class SetBrowserCapabilities {
    				System.out.println("Unable to find executable file");
    				return null;
    			}
-//			System.out.println("ieDriverLocation -- "+ ieDriverLocation.getAbsolutePath());  		      		   
+//			logger.info("ieDriverLocation -- "+ ieDriverLocation.getAbsolutePath());  		      		   
    			System.setProperty("webdriver.ie.driver", ieDriver.getAbsolutePath());
 
 			cap = DesiredCapabilities.internetExplorer();   	     
@@ -85,7 +88,7 @@ public class SetBrowserCapabilities {
    			String workingDir = utils.getCurrentWorkingDirectory();
    			if(workingDir == null)
    			{
-   				System.out.println("Working directory in null ");
+   				logger.warn("Working directory in null ");
    				return null;
    			}
    			File phantomDriver = utils.getBrowserExecutable((workingDir+WebDriverConstants.PATH_TO_BROWSER_EXECUTABLE), "phantomjs");
@@ -95,7 +98,7 @@ public class SetBrowserCapabilities {
    				System.out.println("Unable to find executable file");
    				return null;
    			} 		   
-//   		    System.out.println("phontomJsLocation -- "+ phantomDriver.getAbsolutePath());    
+//   		    logger.info("phontomJsLocation -- "+ phantomDriver.getAbsolutePath());    
 			System.setProperty("phantomjs.binary.path", phantomDriver.getAbsolutePath());
    			
    		    cap = DesiredCapabilities.phantomjs();
