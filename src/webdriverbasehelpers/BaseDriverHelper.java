@@ -1,6 +1,10 @@
 package webdriverbasehelpers;
 
+import java.net.URL;
 import java.util.Map;
+
+import org.openqa.selenium.remote.RemoteWebDriver;
+
 import java.util.Map.Entry;
 
 import net.lightbody.bmp.proxy.ProxyServer;
@@ -53,7 +57,15 @@ public class BaseDriverHelper {
 				System.out.println("browserName -- "+ browserName);
 				DesiredCapabilities cap = null;
 				SetBrowserCapabilities setBrowserCapabilities = new SetBrowserCapabilities();
-				if(browserName.equalsIgnoreCase("chrome"))
+				
+				DesiredCapabilities capab = new DesiredCapabilities();
+				capab.setBrowserName("firefox");
+				capab.setVersion("9.0.1");
+				capab.setPlatform(org.openqa.selenium.Platform.WINDOWS);
+				
+				driver = new RemoteWebDriver(new URL("http://127.0.0.1:4444/wd/hub"),capab);
+				
+	/*			if(browserName.equalsIgnoreCase("chrome"))
 				{
 					cap = setBrowserCapabilities.setChromeDriver(cap);
 		   			if(cap != null)
@@ -84,12 +96,12 @@ public class BaseDriverHelper {
 						driver = new PhantomJSDriver(cap);
 		   			else
 		   				throw new MyCoreExceptions("Capabilities return as Null");
-				}
+				}   */
 					
-				System.out.println("Starting the Browser -- "+ cap.getBrowserName());
+				System.out.println("Starting the Browser -- "+ capab.getBrowserName());
 				
-				createProxy(cap);	
-				printCapabilities(cap);
+				createProxy(capab);	
+				printCapabilities(capab);
 			
 		   }catch ( Exception e){
 			   e.printStackTrace();
