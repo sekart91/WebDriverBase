@@ -7,6 +7,7 @@ import java.util.Map;
 public class WebDriverConstants {
 	
 	public static String PATH_TO_BROWSER_EXECUTABLE = "\\resources\\drivers\\";
+	public static String PATH_TO_BROWSER_SCREENSHOT = "resources\\screenshot\\";
 	public static final Map<String, String> DRIVER_METHOD;
 	static {
 	  Map<String, String> tmp = new LinkedHashMap<String, String>();

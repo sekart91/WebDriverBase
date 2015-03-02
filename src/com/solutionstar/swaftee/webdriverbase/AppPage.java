@@ -2,13 +2,17 @@ package com.solutionstar.swaftee.webdriverbase;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.james.mime4j.field.datetime.DateTime;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -28,13 +32,15 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.ITestResult;
+import org.testng.TestListenerAdapter;
 
 import com.google.common.base.Function;
 import com.solutionstar.swaftee.constants.WebDriverConstants;
 import com.solutionstar.swaftee.utils.PageUtils;
 import com.solutionstar.swaftee.webdriverFactory.AppDriver;
 
-public class AppPage 
+public class AppPage extends TestListenerAdapter 
 {
 	 WebDriver driver;
 	 protected static Logger logger = LoggerFactory.getLogger(AppDriver.class.getName());
@@ -146,6 +152,8 @@ public class AppPage
 	    	  logger.info("Error While taking Screen Shot");
 	      }
 	  }
+	  
+	 
 	  public void selectDropdown(WebElement element, String by, String value) 
 	  {
 		  Select select = new Select(element);
