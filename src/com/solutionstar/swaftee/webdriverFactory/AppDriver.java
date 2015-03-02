@@ -1,11 +1,16 @@
 package com.solutionstar.swaftee.webdriverFactory;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
@@ -18,7 +23,9 @@ import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 
+import com.opencsv.CSVReader;
 import com.solutionstar.swaftee.CustomExceptions.MyCoreExceptions;
 import com.solutionstar.swaftee.constants.WebDriverConstants;
 import com.solutionstar.swaftee.utils.CSVParserUtils;
@@ -183,6 +190,27 @@ public class AppDriver extends TestListenerAdapter {
 	public String getBrowserName() 
 	{
 	    return getDriver() != null ? ((RemoteWebDriver) getDriver()).getCapabilities().getBrowserName() : null;
+	}
+	
+	@SuppressWarnings("resource")
+	@DataProvider(name = "GenericDataProvider")
+	public Object[][] genericDataProvider(Method methodName) throws IOException {
+		logger.info("Method Name :" + methodName.getName());
+		Reader reader = new FileReader("./resources/Testdata"+ methodName.getName() + ".csv");
+		List<String[]> scenarioData = new CSVReader(reader).readAll();
+		Object[][] data = new Object[scenarioData.size() - 1][1];
+		Iterator<String[]> it = scenarioData.iterator();
+		String[] header = it.next();
+		int CSV_cnt = 0;
+		while (it.hasNext()) {
+			HashMap<String, String> hashItem = new HashMap<String, String>();
+			String[] line = it.next();
+			for (int i = 0; i < line.length; i++)
+				hashItem.put(header[i], line[i]);
+			data[CSV_cnt][0] = hashItem;
+			CSV_cnt++;
+		}
+		return data;
 	}
 
 	protected void stopDriver() 
