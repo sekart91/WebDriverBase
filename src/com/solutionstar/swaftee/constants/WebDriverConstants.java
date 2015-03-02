@@ -16,6 +16,7 @@ public class WebDriverConstants {
 	  tmp.put("phantomjs", "setPhomtomJsDriver");
 	  DRIVER_METHOD = Collections.unmodifiableMap(tmp);
 	}
+	public static String DEFAULT_BROWSER_NAME = "chrome";
 	public static int WAIT_FOR_VISIBILITY_TIMEOUT_IN_SEC = 10;
 	public static int MAX_TIMEOUT_PAGE_LOAD = 40;
 	final public static String PROXY_SERVER  = "proxyserver.enabled";

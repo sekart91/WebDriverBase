@@ -30,10 +30,29 @@ public class AppDriver {
 	    baseDriverHelper.startDriver();
 	}
 	
+	public void startSecondaryDriver() throws InterruptedException
+	{
+		baseDriverHelper.startSecondaryDriver();
+	}
+	
 	public WebDriver getDriver()
 	{
-		logger.info("Returning BaseDriver");
 		return baseDriverHelper.getDriver();
+	}
+	
+	public WebDriver getSecondaryDriver()
+	{
+		return baseDriverHelper.getSecondaryDriver();
+	}
+
+	public String getPrimaryWinhandle() throws MyCoreExceptions
+	{
+		return baseDriverHelper.getPrimaryWinhandle();
+	}
+	
+	public String getSecondaryWinhandle() throws MyCoreExceptions
+	{
+		return baseDriverHelper.getSecondaryWinhandle();
 	}
 	
 	public Logger getLogger()
@@ -96,7 +115,7 @@ public class AppDriver {
 	@AfterSuite
 	public void afterMethod()
 	{
-		System.out.println("Stopping BaseDrivers");
+		logger.info("Stopping BaseDrivers");
 		baseDriverHelper.stopDriver();
 		baseDriverHelper.stopServer();		
 	}
@@ -113,10 +132,20 @@ public class AppDriver {
 	      getDriver().quit();
 	      setDriver(null);
 	    }
+	    if(getSecondaryDriver() != null)
+	    {
+	      getSecondaryDriver().quit();
+	      setSecondaryDriver(null);	    	
+	    }
      }
 
 	  public void setDriver(WebDriver driver) 
 	  {
 		  baseDriverHelper.setDriver(driver);
+	  }
+	  
+	  public void setSecondaryDriver(WebDriver driver) 
+	  {
+		  baseDriverHelper.setSecondaryDriver(driver);
 	  }
  }

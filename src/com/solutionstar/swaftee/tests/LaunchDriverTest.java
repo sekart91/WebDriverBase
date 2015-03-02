@@ -2,6 +2,7 @@ package com.solutionstar.swaftee.tests;
 
 import java.util.HashMap;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.testng.Assert;
@@ -38,7 +39,7 @@ public class LaunchDriverTest extends AppDriver {
 //			 logger.info("Current url - "+driver.getCurrentUrl());
 			
 		} catch (Exception e) {
-//			e.printStackTrace();
+			e.printStackTrace();
 			logger.error("Exception occured");
 			Assert.fail("Exception occured");
 		}  
@@ -72,5 +73,33 @@ public class LaunchDriverTest extends AppDriver {
 			String[] rowArray = csvData_with_multikey.get(key);
 			logger.info("\n key - "+ key + "\n Row value - "+ getCSVData(rowArray, csvColumnIndex_with_multikey.get("name")) );
 		}
+	}
+	
+	@Test (description = "Driver switch test")
+	public void checkMethod() throws InterruptedException, MyCoreExceptions
+	{
+		 System.setProperty("webdriver.secondary.browser", "firefox");
+		 
+		 WebDriver driver = getDriver();
+		 
+		 startSecondaryDriver();
+		 
+		 WebDriver secDriver = getSecondaryDriver();
+		
+		 driver.get("https://homesearch.com");
+		 Thread.sleep(2000);
+		
+		 secDriver.get("https://google.com");
+		 Thread.sleep(2000);
+		 
+		 driver.findElements(By.cssSelector(".list-inline li")).get(0).click();
+		 Thread.sleep(2000);
+		 logger.info("Current url - "+driver.getCurrentUrl());
+		 
+		 secDriver.findElement(By.id("lst-ib")).sendKeys("new driver");
+		 logger.info("Current url - "+driver.getCurrentUrl());
+		 
+		 Thread.sleep(10000);
+
 	}
 }

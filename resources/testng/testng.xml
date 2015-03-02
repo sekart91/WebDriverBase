@@ -4,7 +4,7 @@
 
   <test name="WebDriver Base Build" >
     <classes>
-       <class name="test.LaunchDriverTest" />
+       <class name="com.solutionstar.swaftee.tests.LaunchDriverTest" />
     </classes>
   </test>
 
