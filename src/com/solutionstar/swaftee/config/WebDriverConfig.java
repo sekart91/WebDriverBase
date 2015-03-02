@@ -19,19 +19,6 @@ public class WebDriverConfig
 
 	public static String getWebDriverProperty(String propertyName) throws IOException 
 	{
-/*		Properties property = new Properties();
-    	InputStream inputStream = null;
-	    String filename = "webdriverconfig.properties";
-	    WebDriverConfig.class.getClassLoader();
-		inputStream = WebDriverConfig.class.getClassLoader().getResourceAsStream(filename);
-		
-		//load a properties file from class path, inside static method
-		property.load(inputStream);
-
-        //get the property value and print it out
-        System.out.println(property.getProperty("propertyName"));
-		return property.getProperty("propertyName");
-	*/
 		if(propertyName.equalsIgnoreCase("gridserver"))
 			return "localhost";
 		else if(propertyName.equalsIgnoreCase("gridserverport"))

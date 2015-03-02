@@ -80,8 +80,6 @@ public class LaunchDriverTest extends AppDriver {
 		 
 		 WebDriver driver = getDriver();
 		 
-		 startSecondaryDriver();
-		 
 		 WebDriver secDriver = getSecondaryDriver();
 		
 		 driver.get("https://google.com");

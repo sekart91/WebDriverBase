@@ -22,5 +22,6 @@ public class WebDriverConstants {
 	public static int MAX_TIMEOUT_PAGE_LOAD = 40;
 	final public static String PROXY_SERVER  = "proxyserver.enabled";
 	final public static String GRID_SERVER  = "grid.enabled";
+	public static final String DEFAULT_BROWSER_OS = "windows";
 
 }

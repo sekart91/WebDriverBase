@@ -17,13 +17,11 @@ import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
 
 import com.solutionstar.swaftee.CustomExceptions.MyCoreExceptions;
 import com.solutionstar.swaftee.constants.WebDriverConstants;
 import com.solutionstar.swaftee.utils.CSVParserUtils;
-import com.solutionstar.swaftee.webdriverbase.AppPage;
 import com.solutionstar.swaftee.webdriverhelpers.BaseDriverHelper;
 
 
@@ -63,8 +61,14 @@ public class AppDriver extends TestListenerAdapter {
 	public void startBaseDriver() throws InterruptedException
 	{
 		logger.info("Starting BaseDrivers");
-	    baseDriverHelper.startServer();
-	    baseDriverHelper.startDriver();
+	   
+	    try 
+	    {
+	    	baseDriverHelper.startServer();
+			baseDriverHelper.startDriver();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	  public void screenShot(String fileName, WebDriver webDriver) 
@@ -80,20 +84,25 @@ public class AppDriver extends TestListenerAdapter {
 	    	  logger.info("Error While taking Screen Shot");
 	      }
 	  }
-	  
-	public void startSecondaryDriver() throws InterruptedException
-	{
-		baseDriverHelper.startSecondaryDriver();
-	}
 	
 	public WebDriver getDriver()
 	{
 		return baseDriverHelper.getDriver();
 	}
 	
-	public WebDriver getSecondaryDriver()
+	public WebDriver getSecondaryDriver() 
 	{
-		return baseDriverHelper.getSecondaryDriver();
+		try 
+		{
+			if(baseDriverHelper.getSecondaryDriver() == null)
+				baseDriverHelper.startSecondaryDriver();
+			return baseDriverHelper.getSecondaryDriver();
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public String getPrimaryWinhandle() throws MyCoreExceptions
