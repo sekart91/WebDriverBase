@@ -6,8 +6,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.testng.Assert;
-import org.testng.ITestContext;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
@@ -78,7 +76,7 @@ public class LaunchDriverTest extends AppDriver {
 	@Test (description = "Driver switch test")
 	public void checkMethod() throws InterruptedException, MyCoreExceptions
 	{
-		 System.setProperty("webdriver.secondary.browser", "firefox");
+		 System.setProperty("webdriver.secondary.browser", "chrome");
 		 
 		 WebDriver driver = getDriver();
 		 
@@ -86,18 +84,31 @@ public class LaunchDriverTest extends AppDriver {
 		 
 		 WebDriver secDriver = getSecondaryDriver();
 		
-		 driver.get("https://homesearch.com");
+		 driver.get("https://google.com");
 		 Thread.sleep(2000);
 		
 		 secDriver.get("https://google.com");
 		 Thread.sleep(2000);
 		 
-		 driver.findElements(By.cssSelector(".list-inline li")).get(0).click();
+//		 driver.findElements(By.cssSelector(".list-inline li")).get(0).click();
+//		 Thread.sleep(2000);
+		 driver.findElement(By.id("gb_70")).click();
 		 Thread.sleep(2000);
+		 
+		 driver.findElement(By.id("Email")).sendKeys("sekart91");
+		 driver.findElement(By.id("Passwd")).sendKeys("");
+		 driver.findElement(By.id("signIn")).click();
+		 Thread.sleep(2000);		 
 		 logger.info("Current url - "+driver.getCurrentUrl());
 		 
+		 
+		 secDriver.navigate().refresh();
+		 Thread.sleep(2000);
 		 secDriver.findElement(By.id("lst-ib")).sendKeys("new driver");
 		 logger.info("Current url - "+driver.getCurrentUrl());
+		 
+		 secDriver.findElement(By.id("gb_70")).click();
+		 Thread.sleep(2000);
 		 
 		 Thread.sleep(10000);
 
