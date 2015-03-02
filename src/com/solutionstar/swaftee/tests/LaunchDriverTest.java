@@ -10,7 +10,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import com.solutionstar.swaftee.CustomExceptions.MyCoreExceptions;
-import com.solutionstar.swaftee.webdriverbase.AppDriver;
+import com.solutionstar.swaftee.webdriverFactory.AppDriver;
 
 public class LaunchDriverTest extends AppDriver {
 	
@@ -79,8 +79,6 @@ public class LaunchDriverTest extends AppDriver {
 		 System.setProperty("webdriver.secondary.browser", "chrome");
 		 
 		 WebDriver driver = getDriver();
-		 
-		 startSecondaryDriver();
 		 
 		 WebDriver secDriver = getSecondaryDriver();
 		

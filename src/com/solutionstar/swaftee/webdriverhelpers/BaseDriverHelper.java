@@ -1,12 +1,15 @@
-package com.solutionstar.swaftee.webdriverbasehelpers;
+package com.solutionstar.swaftee.webdriverhelpers;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import net.lightbody.bmp.proxy.ProxyServer;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -20,7 +23,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.solutionstar.swaftee.CustomExceptions.MyCoreExceptions;
+import com.solutionstar.swaftee.config.WebDriverConfig;
 import com.solutionstar.swaftee.constants.WebDriverConstants;
+
+import org.openqa.selenium.remote.RemoteWebDriver;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 public class BaseDriverHelper {
 	
@@ -50,44 +60,46 @@ public class BaseDriverHelper {
 	       }
 	   }
 	
-	   public void startDriver() throws InterruptedException
+	   public void startDriver() throws Exception
 	   {
-		   try{
-			    if(driver != null)
+		 	    if(driver != null)
 			    	return;
 			    String browserName = getBrowserName("primary");
 			    logger.info("browserName -- "+ browserName);
-			    createDriverCapabilities(browserName);
 			    DesiredCapabilities cap = createDriverCapabilities(browserName);		
 				if (cap == null)
 					throw new MyCoreExceptions("Capabilities return as Null");
-				driver = startBrowser(cap, browserName);
-				createProxy(cap);	
 				
-				printCapabilities(cap);
-		   }catch ( Exception e){
-			   e.printStackTrace();
-		   }
+				driver = setWebDriver(cap);
+		 
 		}
-	   
-	   public void startSecondaryDriver() throws InterruptedException
+
+	   public WebDriver setWebDriver(DesiredCapabilities cap2) throws Exception
 	   {
-		   try{
-			    if(secondaryDriver != null)
-			    	return;			    
-			    String browserName = getBrowserName("secondary");
-			    createDriverCapabilities(browserName);
-			    DesiredCapabilities cap = createDriverCapabilities(browserName);		
-				if (cap == null)
-					throw new MyCoreExceptions("Capabilities return as Null");
-				logger.info("browserName -- "+ browserName);
-				secondaryDriver = startBrowser(cap, browserName);
-				createProxy(cap);	
-				printCapabilities(cap);
-		   }catch ( Exception e){
-			   e.printStackTrace();
-		   }
-		}
+		   if(WebDriverConfig.usingGrid())
+			{
+			   cap2 = setRemoteDriverCapabilities(cap2.getBrowserName());
+				driver = setRemoteWebDriver(cap2);
+			}
+			else
+				driver = startBrowser(cap2);
+		    createProxy(cap2);
+			return driver;
+	   }
+	   
+	   
+	   public void startSecondaryDriver() throws Exception
+	   {
+	  	    if(secondaryDriver != null)
+		    	return;			    
+		    String browserName = getBrowserName("secondary");
+		    DesiredCapabilities cap = createDriverCapabilities(browserName);		
+			if (cap == null)
+				throw new MyCoreExceptions("Capabilities return as Null");
+			logger.info("browserName -- "+ browserName);
+			secondaryDriver = setWebDriver(cap);
+				
+	   }
 	    	   
 	   private String getBrowserName(String driverType) throws MyCoreExceptions
 	   {
@@ -123,12 +135,11 @@ public class BaseDriverHelper {
 		   return cap;
 	   }
 	   
-	   private WebDriver startBrowser(DesiredCapabilities cap, String browserName)
+	   private WebDriver startBrowser(DesiredCapabilities cap)
 	   {  
 		   WebDriver driver = null;
 		   try{
-			   
-				switch (browserName) 
+				switch (cap.getBrowserName()) 
 			    {
 				     case "chrome":
 				    	driver = new ChromeDriver(cap);
@@ -143,7 +154,7 @@ public class BaseDriverHelper {
 						driver = new PhantomJSDriver(cap);
 			   			break;
 					default:
-			            throw new IllegalArgumentException("Invalid Argument for browser name : " + browserName);
+			            throw new IllegalArgumentException("Invalid Argument for browser name : " + cap.getBrowserName());
 			    }
 				
 		   }catch(Exception e){
@@ -152,11 +163,52 @@ public class BaseDriverHelper {
 		   return driver;
 	   }
 	   
+	 
+	   private DesiredCapabilities setRemoteDriverCapabilities(String browserName) throws Exception
+	   {
+		 	DesiredCapabilities capab = new DesiredCapabilities();
+			capab.setBrowserName(browserName);
+			if(System.getProperty("webDriver.browser.version") != null)
+				capab.setVersion(System.getProperty("webDriver.browser.version"));
+			capab.setPlatform(getOperatingSystem());
+			
+			return capab;
+	   }
+	
+	   private Platform getOperatingSystem() 
+	   {
+			String os = System.getProperty("webDriver.platform.OS",WebDriverConstants.DEFAULT_BROWSER_OS);
+			switch(os.toLowerCase())
+			{
+			case "windows":
+				return Platform.WINDOWS;
+			case "mac":
+				return Platform.MAC;
+			}
+			return null;
+	   }
+	   
+	   private DesiredCapabilities setDriverCapabilities(String browserName) throws Exception
+	   {
+		   DesiredCapabilities cap = null;
+		   SetBrowserCapabilities setBrowserCapabilities = new SetBrowserCapabilities();
+		   browserName =  WebDriverConstants.DRIVER_METHOD.containsKey(browserName) ? browserName : "chrome";
+	
+		   Method setCapabilities = setBrowserCapabilities.getClass().getMethod(WebDriverConstants.DRIVER_METHOD.get(browserName),DesiredCapabilities.class);
+		   return (DesiredCapabilities) setCapabilities.invoke(setBrowserCapabilities, cap);
+	   }
+	   
+	   private WebDriver setRemoteWebDriver(DesiredCapabilities cap) throws Exception
+	   {
+			return new RemoteWebDriver(new URL("http://"+ WebDriverConfig.getWebDriverProperty("gridserver") +":"+ WebDriverConfig.getWebDriverProperty("gridserverport") +"/wd/hub"),cap);
+	   }   
+	   
+	   
 	    private Proxy createProxyObject() 
 	    {
 	    	Proxy proxy = null;
 	    	try {
-	          proxy = proxyServer.seleniumProxy();
+	    		proxy = proxyServer.seleniumProxy();
 	        } catch (Exception e) {
 	        	e.printStackTrace();
 	        }
