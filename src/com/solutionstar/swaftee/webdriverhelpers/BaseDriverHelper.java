@@ -71,6 +71,7 @@ public class BaseDriverHelper {
 					throw new MyCoreExceptions("Capabilities return as Null");
 				driver = startBrowser(cap, browserName);
 				createProxy(cap);	
+				
 				printCapabilities(cap);
 		   }catch ( Exception e){
 			   e.printStackTrace();
@@ -199,11 +200,16 @@ public class BaseDriverHelper {
 	    
 	    public void stopDriver() 
 	    {
-	        if (driver != null) 
-	        {
-	        	this.driver.quit();
-	        	this.driver = null;
-	        }
+	    	 if(getDriver() != null) 
+	 	    {
+	 	      getDriver().quit();
+	 	      setDriver(null);
+	 	    }
+	 	    if(getSecondaryDriver() != null)
+	 	    {
+	 	      getSecondaryDriver().quit();
+	 	      setSecondaryDriver(null);	    	
+	 	    }
 	    }
 	    
 	    public WebDriver getDriver()

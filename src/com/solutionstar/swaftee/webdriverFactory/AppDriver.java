@@ -111,7 +111,7 @@ public class AppDriver {
 	{
 		return csvParser.getCSVData(rowArray, index);
 	}
-	
+		
 	@AfterSuite
 	public void afterMethod()
 	{
@@ -127,16 +127,7 @@ public class AppDriver {
 
 	protected void stopDriver() 
 	{
-	    if (getDriver() != null) 
-	    {
-	      getDriver().quit();
-	      setDriver(null);
-	    }
-	    if(getSecondaryDriver() != null)
-	    {
-	      getSecondaryDriver().quit();
-	      setSecondaryDriver(null);	    	
-	    }
+	    baseDriverHelper.stopDriver();
      }
 
 	  public void setDriver(WebDriver driver) 
