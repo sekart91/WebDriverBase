@@ -12,7 +12,8 @@
 	<classpathentry kind="lib" path="External Jars/selenium-server-standalone-2.44.0.jar"/>
 	<classpathentry kind="lib" path="External Jars/slf4j-api-1.7.10.jar"/>
 	<classpathentry kind="lib" path="External Jars/slf4j-simple-1.7.10.jar"/>
+	<classpathentry kind="lib" path="External Jars/google-collections.jar"/>
 	<classpathentry kind="con" path="org.testng.TESTNG_CONTAINER"/>
-	<classpathentry kind="lib" path="E:/repo/WebDriverBase/External Jars/google-collections.jar"/>
+	<classpathentry kind="lib" path="External Jars/google-collections-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

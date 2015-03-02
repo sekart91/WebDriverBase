@@ -25,8 +25,8 @@ import com.solutionstar.swaftee.constants.WebDriverConstants;
 public class BaseDriverHelper {
 	
 	WebDriver driver = null;
+	WebDriver secondaryDriver = null;	
 	ProxyServer proxyServer = null;
-	Proxy proxy;
 	
 	Logger logger = getLogger(this.getClass());
 	
@@ -55,21 +55,82 @@ public class BaseDriverHelper {
 		   try{
 			    if(driver != null)
 			    	return;
-			    String browserName = System.getProperty("webdriver.browserName", "Chrome");  // Setting the chrome as default browser if no browser name is specified 
+			    String browserName = getBrowserName("primary");
 			    logger.info("browserName -- "+ browserName);
-				DesiredCapabilities cap = null;
-				SetBrowserCapabilities setBrowserCapabilities = new SetBrowserCapabilities();
-				browserName = browserName.toLowerCase() ;
-				browserName =  WebDriverConstants.DRIVER_METHOD.containsKey(browserName) ? browserName : "chrome";
-			
-				Method setCapabilities = setBrowserCapabilities.getClass().getMethod(WebDriverConstants.DRIVER_METHOD.get(browserName),DesiredCapabilities.class);
-				cap = (DesiredCapabilities) setCapabilities.invoke(setBrowserCapabilities, cap);
+			    createDriverCapabilities(browserName);
+			    DesiredCapabilities cap = createDriverCapabilities(browserName);		
 				if (cap == null)
 					throw new MyCoreExceptions("Capabilities return as Null");
+				driver = startBrowser(cap, browserName);
+				createProxy(cap);	
+				printCapabilities(cap);
+		   }catch ( Exception e){
+			   e.printStackTrace();
+		   }
+		}
+	   
+	   public void startSecondaryDriver() throws InterruptedException
+	   {
+		   try{
+			    if(secondaryDriver != null)
+			    	return;			    
+			    String browserName = getBrowserName("secondary");
+			    createDriverCapabilities(browserName);
+			    DesiredCapabilities cap = createDriverCapabilities(browserName);		
+				if (cap == null)
+					throw new MyCoreExceptions("Capabilities return as Null");
+				logger.info("browserName -- "+ browserName);
+				secondaryDriver = startBrowser(cap, browserName);
+				createProxy(cap);	
+				printCapabilities(cap);
+		   }catch ( Exception e){
+			   e.printStackTrace();
+		   }
+		}
+	    	   
+	   private String getBrowserName(String driverType) throws MyCoreExceptions
+	   {
+		   String browserName = WebDriverConstants.DEFAULT_BROWSER_NAME;
+		   try{
+			    switch(driverType)
+			    {
+				    case "primary"   : 	browserName = System.getProperty("webdriver.browser", WebDriverConstants.DEFAULT_BROWSER_NAME) ;  // Setting the default browser if no browser name is specified
+				    				   	break;
+				    case "secondary" : 	browserName = System.getProperty("webdriver.secondary.browser", WebDriverConstants.DEFAULT_BROWSER_NAME) ;
+					 				 	break;
+				    default			 : 	browserName = WebDriverConstants.DEFAULT_BROWSER_NAME;						
+			    }
+				browserName = browserName.toLowerCase() ;
+				browserName =  WebDriverConstants.DRIVER_METHOD.containsKey(browserName) ? browserName : WebDriverConstants.DEFAULT_BROWSER_NAME;					
+		   }catch(Exception e){
+			   throw new MyCoreExceptions("Exception while assiging browserName");
+		   }
+			return browserName;
+	   }
+	   
+	   private DesiredCapabilities createDriverCapabilities(String browserName)
+	   {
+		   DesiredCapabilities cap = null;			
+		   try{
+			    SetBrowserCapabilities setBrowserCapabilities = new SetBrowserCapabilities();
+				Method setCapabilities = setBrowserCapabilities.getClass().getMethod(WebDriverConstants.DRIVER_METHOD.get(browserName),DesiredCapabilities.class);
+				cap = (DesiredCapabilities) setCapabilities.invoke(setBrowserCapabilities, cap);
+
+		   }catch(Exception e){
+			   e.printStackTrace();
+		   }
+		   return cap;
+	   }
+	   
+	   private WebDriver startBrowser(DesiredCapabilities cap, String browserName)
+	   {  
+		   WebDriver driver = null;
+		   try{
+			   
 				switch (browserName) 
 			    {
 				     case "chrome":
-						driver = new ChromeDriver(cap);
+				    	driver = new ChromeDriver(cap);
 			   			break;
 					case "ie":
 						driver = new InternetExplorerDriver();
@@ -83,16 +144,17 @@ public class BaseDriverHelper {
 					default:
 			            throw new IllegalArgumentException("Invalid Argument for browser name : " + browserName);
 			    }
-				createProxy(cap);	
-				printCapabilities(cap);
-			
-		   }catch ( Exception e){
+				
+		   }catch(Exception e){
 			   e.printStackTrace();
 		   }
-		}
-	    
-	    private Proxy createProxyObject() {
-	        try {
+		   return driver;
+	   }
+	   
+	    private Proxy createProxyObject() 
+	    {
+	    	Proxy proxy = null;
+	    	try {
 	          proxy = proxyServer.seleniumProxy();
 	        } catch (Exception e) {
 	        	e.printStackTrace();
@@ -140,9 +202,20 @@ public class BaseDriverHelper {
 	    {
 	    	return this.driver;
 	    }
+	    
+	    public WebDriver getSecondaryDriver()
+	    {
+	    	return this.secondaryDriver;
+	    }
+	    
 	    public void setDriver(Object obj)
 	    {
 	    	this.driver = (WebDriver) obj;
+	    }
+	    
+	    public void setSecondaryDriver(Object obj)
+	    {
+	    	this.secondaryDriver = (WebDriver) obj;
 	    }
 	    
 	    private void printCapabilities(Capabilities capabilities)
@@ -164,5 +237,29 @@ public class BaseDriverHelper {
 				e.printStackTrace();
 			}
 			return logger;
-		}	    
+		}	
+		
+		public String getPrimaryWinhandle() throws MyCoreExceptions
+		{
+			try{
+//				if(this.driver == null)
+//					throw new MyCoreExceptions("Unable to get the winhandle as the driver is set as null");
+				return this.driver.getWindowHandle();
+			}catch(Exception e){
+				e.printStackTrace();
+				throw new MyCoreExceptions("Exception occured... "+ e.getStackTrace());
+				
+			}
+		}
+		
+		public String getSecondaryWinhandle() throws MyCoreExceptions
+		{
+			try{
+				if(this.secondaryDriver == null)
+					throw new MyCoreExceptions("Unable to get the winhandle as the driver is set as null");
+				return this.secondaryDriver.getWindowHandle();
+			}catch(Exception e){
+				throw new MyCoreExceptions("Exception occured... "+ e.getStackTrace());
+			}
+		}
 }
