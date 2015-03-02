@@ -11,7 +11,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import com.solutionstar.swaftee.CustomExceptions.MyCoreExceptions;
-import com.solutionstar.swaftee.webdriverbase.AppDriver;
+import com.solutionstar.swaftee.webdriverFactory.AppDriver;
 
 public class LaunchDriverTest extends AppDriver {
 	

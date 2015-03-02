@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Function;
 import com.solutionstar.swaftee.constants.WebDriverConstants;
 import com.solutionstar.swaftee.utils.PageUtils;
+import com.solutionstar.swaftee.webdriverFactory.AppDriver;
 
 public class AppPage 
 {

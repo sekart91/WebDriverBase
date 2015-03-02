@@ -1,4 +1,4 @@
-package com.solutionstar.swaftee.webdriverbasehelpers;
+package com.solutionstar.swaftee.webdriverhelpers;
 
 import java.io.File;
 

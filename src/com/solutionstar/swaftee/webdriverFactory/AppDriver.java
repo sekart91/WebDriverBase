@@ -1,4 +1,4 @@
-package com.solutionstar.swaftee.webdriverbase;
+package com.solutionstar.swaftee.webdriverFactory;
 
 import java.util.HashMap;
 
@@ -11,7 +11,7 @@ import org.testng.annotations.BeforeClass;
 
 import com.solutionstar.swaftee.CustomExceptions.MyCoreExceptions;
 import com.solutionstar.swaftee.utils.CSVParserUtils;
-import com.solutionstar.swaftee.webdriverbasehelpers.BaseDriverHelper;
+import com.solutionstar.swaftee.webdriverhelpers.BaseDriverHelper;
 
 
 public class AppDriver {

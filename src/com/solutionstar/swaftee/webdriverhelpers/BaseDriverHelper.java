@@ -1,6 +1,8 @@
-package com.solutionstar.swaftee.webdriverbasehelpers;
+package com.solutionstar.swaftee.webdriverhelpers;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -20,7 +22,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.solutionstar.swaftee.CustomExceptions.MyCoreExceptions;
+import com.solutionstar.swaftee.config.WebDriverConfig;
 import com.solutionstar.swaftee.constants.WebDriverConstants;
+
+import org.openqa.selenium.remote.RemoteWebDriver;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 public class BaseDriverHelper {
 	
@@ -55,34 +63,7 @@ public class BaseDriverHelper {
 		   try{
 			    if(driver != null)
 			    	return;
-			    String browserName = System.getProperty("webdriver.browserName", "Chrome");  // Setting the chrome as default browser if no browser name is specified 
-			    logger.info("browserName -- "+ browserName);
-				DesiredCapabilities cap = null;
-				SetBrowserCapabilities setBrowserCapabilities = new SetBrowserCapabilities();
-				browserName = browserName.toLowerCase() ;
-				browserName =  WebDriverConstants.DRIVER_METHOD.containsKey(browserName) ? browserName : "chrome";
-			
-				Method setCapabilities = setBrowserCapabilities.getClass().getMethod(WebDriverConstants.DRIVER_METHOD.get(browserName),DesiredCapabilities.class);
-				cap = (DesiredCapabilities) setCapabilities.invoke(setBrowserCapabilities, cap);
-				if (cap == null)
-					throw new MyCoreExceptions("Capabilities return as Null");
-				switch (browserName) 
-			    {
-				     case "chrome":
-						driver = new ChromeDriver(cap);
-			   			break;
-					case "ie":
-						driver = new InternetExplorerDriver();
-			   			break;
-					case "firefox":
-						driver = new FirefoxDriver(cap);
-			   			break;
-					case "phantomjs":
-						driver = new PhantomJSDriver(cap);
-			   			break;
-					default:
-			            throw new IllegalArgumentException("Invalid Argument for browser name : " + browserName);
-			    }
+			    DesiredCapabilities cap = startDriver(System.getProperty("webdriver.browserName", "Chrome"));
 				createProxy(cap);	
 				printCapabilities(cap);
 			
@@ -91,6 +72,74 @@ public class BaseDriverHelper {
 		   }
 		}
 	    
+	   
+	   public DesiredCapabilities startDriver(String browserName) throws Exception
+	   {
+		    browserName = browserName.toLowerCase();
+	   		logger.info("browserName -- "+ browserName);
+	   		DesiredCapabilities cap = setDriverCapabilities(browserName);
+			if(WebDriverConfig.usingGrid())
+			{
+				cap = setRemoteWebDriver(browserName);
+			}
+			else
+			{
+				cap = setWebDriver(browserName);
+			}
+			return cap;
+	   }
+	   
+
+	   private DesiredCapabilities setRemoteDriverCapabilities(String browserName) throws Exception
+	   {
+		 	DesiredCapabilities capab = new DesiredCapabilities();
+			capab.setBrowserName(browserName);
+			capab.setVersion("9.0.1");
+			capab.setPlatform(org.openqa.selenium.Platform.WINDOWS);
+			
+			return capab;
+	   }
+	
+	   private DesiredCapabilities setDriverCapabilities(String browserName) throws Exception
+	   {
+		   DesiredCapabilities cap = null;
+		   SetBrowserCapabilities setBrowserCapabilities = new SetBrowserCapabilities();
+		   browserName =  WebDriverConstants.DRIVER_METHOD.containsKey(browserName) ? browserName : "chrome";
+	
+		   Method setCapabilities = setBrowserCapabilities.getClass().getMethod(WebDriverConstants.DRIVER_METHOD.get(browserName),DesiredCapabilities.class);
+		   return (DesiredCapabilities) setCapabilities.invoke(setBrowserCapabilities, cap);
+	   }
+	   
+	   private DesiredCapabilities setWebDriver(String browserName) throws Exception
+	   {
+		   DesiredCapabilities cap = setDriverCapabilities(browserName);
+			switch (browserName) 
+		    {
+			     case "chrome":
+					driver = new ChromeDriver(cap);
+		   			break;
+				case "ie":
+					driver = new InternetExplorerDriver();
+		   			break;
+				case "firefox":
+					driver = new FirefoxDriver(cap);
+		   			break;
+				case "phantomjs":
+					driver = new PhantomJSDriver(cap);
+		   			break;
+				default:
+		            throw new IllegalArgumentException("Invalid Argument for browser name : " + browserName);
+		    }
+			return cap;
+	   }
+	   
+	   private DesiredCapabilities setRemoteWebDriver(String browserName) throws Exception
+	   {
+		    
+		    DesiredCapabilities cap = setRemoteDriverCapabilities(browserName);
+			driver = new RemoteWebDriver(new URL("http://"+ WebDriverConfig.getWebDriverProperty("gridserver") +":"+ WebDriverConfig.getWebDriverProperty("gridserverport") +"/wd/hub"),cap);
+			return cap;
+	   }   
 	    private Proxy createProxyObject() {
 	        try {
 	          proxy = proxyServer.seleniumProxy();
