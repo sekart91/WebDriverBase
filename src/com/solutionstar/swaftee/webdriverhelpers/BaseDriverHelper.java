@@ -40,6 +40,16 @@ public class BaseDriverHelper {
 	
 	Logger logger = getLogger(this.getClass());
 	
+	enum DriverTypes
+	{
+		   primary, secondary
+    } 
+	
+	enum BrowserNames
+	{
+		   chrome, firefox,ie,phantomjs
+    } 
+	
 	public void startServer() throws InterruptedException
 	   {
 			if(proxyServer !=  null)
@@ -100,16 +110,16 @@ public class BaseDriverHelper {
 			secondaryDriver = setWebDriver(cap);
 				
 	   }
-	    	   
-	   private String getBrowserName(String driverType) throws MyCoreExceptions
+	     
+	   private String getBrowserName(String driverTypeStr) throws MyCoreExceptions
 	   {
 		   String browserName = WebDriverConstants.DEFAULT_BROWSER_NAME;
 		   try{
-			    switch(driverType)
+			    switch(DriverTypes.valueOf(driverTypeStr))
 			    {
-				    case "primary"   : 	browserName = System.getProperty("webdriver.browser", WebDriverConstants.DEFAULT_BROWSER_NAME) ;  // Setting the default browser if no browser name is specified
+				    case primary   : 	browserName = System.getProperty("webdriver.browser", WebDriverConstants.DEFAULT_BROWSER_NAME) ;  // Setting the default browser if no browser name is specified
 				    				   	break;
-				    case "secondary" : 	browserName = System.getProperty("webdriver.secondary.browser", WebDriverConstants.DEFAULT_BROWSER_NAME) ;
+				    case secondary : 	browserName = System.getProperty("webdriver.secondary.browser", WebDriverConstants.DEFAULT_BROWSER_NAME) ;
 					 				 	break;
 				    default			 : 	browserName = WebDriverConstants.DEFAULT_BROWSER_NAME;						
 			    }
@@ -139,18 +149,18 @@ public class BaseDriverHelper {
 	   {  
 		   WebDriver driver = null;
 		   try{
-				switch (cap.getBrowserName()) 
+				switch (BrowserNames.valueOf(cap.getBrowserName())) 
 			    {
-				     case "chrome":
+				     case chrome:
 				    	driver = new ChromeDriver(cap);
 			   			break;
-					case "ie":
+					case ie:
 						driver = new InternetExplorerDriver();
 			   			break;
-					case "firefox":
+					case firefox:
 						driver = new FirefoxDriver(cap);
 			   			break;
-					case "phantomjs":
+					case phantomjs:
 						driver = new PhantomJSDriver(cap);
 			   			break;
 					default:
@@ -178,16 +188,19 @@ public class BaseDriverHelper {
 	   private Platform getOperatingSystem() 
 	   {
 			String os = System.getProperty("webDriver.platform.OS",WebDriverConstants.DEFAULT_BROWSER_OS);
-			switch(os.toLowerCase())
+			switch(OperatingSystem.valueOf(os.toLowerCase()))
 			{
-			case "windows":
+			case windows:
 				return Platform.WINDOWS;
-			case "mac":
+			case mac:
 				return Platform.MAC;
 			}
 			return null;
 	   }
-	   
+	   enum OperatingSystem
+	   {
+		   windows,mac
+	   }
 	   private DesiredCapabilities setDriverCapabilities(String browserName) throws Exception
 	   {
 		   DesiredCapabilities cap = null;
