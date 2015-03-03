@@ -157,19 +157,25 @@ public class AppPage extends TestListenerAdapter
 	  public void selectDropdown(WebElement element, String by, String value) 
 	  {
 		  Select select = new Select(element);
-		  switch (by.toLowerCase()) 
+		  switch (ByTypes.valueOf(by.toLowerCase())) 
 		  {
-		      case "index":
+		      case index:
 		        select.selectByIndex(Integer.parseInt(value));
 		        break;
-		      case "value":
+		      case value:
 		        select.selectByValue(value);
 		        break;
-		      case "text":
+		      case text:
 		        select.selectByVisibleText(value);
 		        break;
 
 		  }
 	  }
+	  
+	  enum ByTypes
+		{
+		  index, value,text
+	    } 
+		
 
 }
