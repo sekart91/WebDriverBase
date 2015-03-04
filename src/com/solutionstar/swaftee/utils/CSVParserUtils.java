@@ -5,11 +5,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.opencsv.CSVReader;
 import com.solutionstar.swaftee.CustomExceptions.MyCoreExceptions;
 import com.solutionstar.swaftee.constants.WebDriverConstants;
 
 public class CSVParserUtils {
+	
+	protected static Logger logger = LoggerFactory.getLogger(CSVParserUtils.class.getName());
 	
 	public HashMap<String, String[]> csvDataHash;
 	public HashMap<String, String> csvColumnIndexHash;
@@ -30,7 +35,7 @@ public class CSVParserUtils {
 		try{
 			initializeConstans();
 			 if(utils == null)
-				 System.out.println("Utils obj is null");
+				 logger.warn("Utils obj is null");
 			 
 			 CSVReader reader = new CSVReader(new FileReader(utils.getCurrentWorkingDirectory() + WebDriverConstants.PATH_TO_TEST_DATA_FILE + fileName + ".csv"));
 			 List<String[]> rowEntries = reader.readAll();
@@ -234,7 +239,7 @@ public class CSVParserUtils {
 	{
 		for(Object key : hashmap.keySet())
 		{
-			System.out.println("Key : " + key.toString() + "- Value : "+ hashmap.get(key));
+			logger.info("Key : " + key.toString() + "- Value : "+ hashmap.get(key));
 		}
 	}
 }

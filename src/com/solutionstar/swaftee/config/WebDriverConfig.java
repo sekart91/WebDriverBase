@@ -1,10 +1,8 @@
 package com.solutionstar.swaftee.config;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
-import com.solutionstar.swaftee.constants.*;
+import com.solutionstar.swaftee.constants.WebDriverConstants;
 
 public class WebDriverConfig 
 {

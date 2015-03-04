@@ -21,10 +21,12 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.browserlaunchers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.ITestResult;
 
 import com.solutionstar.swaftee.CustomExceptions.MyCoreExceptions;
 import com.solutionstar.swaftee.config.WebDriverConfig;
 import com.solutionstar.swaftee.constants.WebDriverConstants;
+import com.solutionstar.swaftee.webdriverFactory.AppDriver;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -39,16 +41,6 @@ public class BaseDriverHelper {
 	ProxyServer proxyServer = null;
 	
 	Logger logger = getLogger(this.getClass());
-	
-	enum DriverTypes
-	{
-		   primary, secondary
-    } 
-	
-	enum BrowserNames
-	{
-		   chrome, firefox,ie,phantomjs
-    } 
 	
 	public void startServer() throws InterruptedException
 	   {
@@ -84,16 +76,16 @@ public class BaseDriverHelper {
 		 
 		}
 
-	   public WebDriver setWebDriver(DesiredCapabilities cap2) throws Exception
+	   public WebDriver setWebDriver(DesiredCapabilities cap) throws Exception
 	   {
 		   if(WebDriverConfig.usingGrid())
 			{
-			   cap2 = setRemoteDriverCapabilities(cap2.getBrowserName());
-				driver = setRemoteWebDriver(cap2);
+			   cap = setRemoteDriverCapabilities(cap.getBrowserName());
+				driver = setRemoteWebDriver(cap);
 			}
 			else
-				driver = startBrowser(cap2);
-		    createProxy(cap2);
+				driver = startBrowser(cap);
+		    createProxy(cap);
 			return driver;
 	   }
 	   
@@ -115,7 +107,7 @@ public class BaseDriverHelper {
 	   {
 		   String browserName = WebDriverConstants.DEFAULT_BROWSER_NAME;
 		   try{
-			    switch(DriverTypes.valueOf(driverTypeStr))
+			    switch(WebDriverConstants.DriverTypes.valueOf(driverTypeStr))
 			    {
 				    case primary   : 	browserName = System.getProperty("webdriver.browser", WebDriverConstants.DEFAULT_BROWSER_NAME) ;  // Setting the default browser if no browser name is specified
 				    				   	break;
@@ -149,12 +141,12 @@ public class BaseDriverHelper {
 	   {  
 		   WebDriver driver = null;
 		   try{
-				switch (BrowserNames.valueOf(cap.getBrowserName())) 
+				switch (WebDriverConstants.BrowserNames.valueOf(cap.getBrowserName().replace(" ", "_"))) 
 			    {
 				     case chrome:
 				    	driver = new ChromeDriver(cap);
 			   			break;
-					case ie:
+					case internet_explorer:
 						driver = new InternetExplorerDriver();
 			   			break;
 					case firefox:
@@ -178,8 +170,8 @@ public class BaseDriverHelper {
 	   {
 		 	DesiredCapabilities capab = new DesiredCapabilities();
 			capab.setBrowserName(browserName);
-			if(System.getProperty("webDriver.browser.version") != null)
-				capab.setVersion(System.getProperty("webDriver.browser.version"));
+			if(System.getProperty("webdriver.browser.version") != null)
+				capab.setVersion(System.getProperty("webdriver.browser.version"));
 			capab.setPlatform(getOperatingSystem());
 			
 			return capab;
@@ -187,8 +179,8 @@ public class BaseDriverHelper {
 	
 	   private Platform getOperatingSystem() 
 	   {
-			String os = System.getProperty("webDriver.platform.OS",WebDriverConstants.DEFAULT_BROWSER_OS);
-			switch(OperatingSystem.valueOf(os.toLowerCase()))
+			String os = System.getProperty("webdriver.platform.os",WebDriverConstants.DEFAULT_BROWSER_OS);
+			switch(WebDriverConstants.OperatingSystem.valueOf(os.toLowerCase()))
 			{
 			case windows:
 				return Platform.WINDOWS;
@@ -197,10 +189,7 @@ public class BaseDriverHelper {
 			}
 			return null;
 	   }
-	   enum OperatingSystem
-	   {
-		   windows,mac
-	   }
+	   
 	   private DesiredCapabilities setDriverCapabilities(String browserName) throws Exception
 	   {
 		   DesiredCapabilities cap = null;
@@ -332,5 +321,11 @@ public class BaseDriverHelper {
 			}catch(Exception e){
 				throw new MyCoreExceptions("Exception occured... "+ e.getStackTrace());
 			}
+		}
+		
+		public WebDriver getDriverfromResult(ITestResult testResult)
+		{
+			  Object currentClass = testResult.getInstance();
+		      return ((AppDriver) currentClass).getDriver();
 		}
 }

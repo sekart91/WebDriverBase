@@ -3,7 +3,7 @@ package com.solutionstar.swaftee.CustomExceptions;
 public class MyCoreExceptions extends Exception{
   
 	/**
-	 * 
+	 * Custom exception for throwing swaftee framework level exceptions.
 	 */
 	private static final long serialVersionUID = 7865939573625396301L;
 	

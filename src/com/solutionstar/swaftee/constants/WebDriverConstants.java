@@ -10,6 +10,25 @@ public class WebDriverConstants {
 	public static String PATH_TO_BROWSER_SCREENSHOT = "resources/screenshot/";
 	public static String PATH_TO_TEST_DATA_FILE = "/resources/testdata/";
 	
+	public static String DEFAULT_BROWSER_NAME = "chrome";
+	public static int WAIT_FOR_VISIBILITY_TIMEOUT_IN_SEC = 10;
+	public static int MAX_TIMEOUT_PAGE_LOAD = 40;
+	final public static String PROXY_SERVER  = "proxyserver.enabled";
+	final public static String GRID_SERVER  = "grid.enabled";
+	public static final String DEFAULT_BROWSER_OS = "windows";
+	
+	public enum OperatingSystem{
+		windows,mac
+	}
+	
+	public enum DriverTypes{
+		primary, secondary
+    } 
+	
+	public enum BrowserNames{
+		chrome, firefox,internet_explorer,phantomjs
+    } 
+    
 	public static final Map<String, String> DRIVER_METHOD;
 	static {
 	  Map<String, String> tmp = new LinkedHashMap<String, String>();
@@ -19,7 +38,7 @@ public class WebDriverConstants {
 	  tmp.put("phantomjs", "setPhomtomJsDriver");
 	  DRIVER_METHOD = Collections.unmodifiableMap(tmp);
 	}
-	
+
 	public static final Map<String, String> WINDOWS_DRIVERS;
 	static {
 	  Map<String, String> tmp = new LinkedHashMap<String, String>();
@@ -37,13 +56,7 @@ public class WebDriverConstants {
 		
 	  MAC_DRIVERS = Collections.unmodifiableMap(tmp);
 	}
-	
-	public static String DEFAULT_BROWSER_NAME = "chrome";
-	public static int WAIT_FOR_VISIBILITY_TIMEOUT_IN_SEC = 10;
-	public static int MAX_TIMEOUT_PAGE_LOAD = 40;
-	final public static String PROXY_SERVER  = "proxyserver.enabled";
-	final public static String GRID_SERVER  = "grid.enabled";
-	public static final String DEFAULT_BROWSER_OS = "windows";
+
 	public static Map<String, String> getDiverDownloadMapping(String osName) 
 	{
 		if(osName.contains("mac"))
@@ -51,5 +64,4 @@ public class WebDriverConstants {
 		else
 			return WINDOWS_DRIVERS;
 	}
-
 }

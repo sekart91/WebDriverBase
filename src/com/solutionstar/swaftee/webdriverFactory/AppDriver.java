@@ -1,20 +1,13 @@
 package com.solutionstar.swaftee.webdriverFactory;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Method;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
@@ -22,13 +15,12 @@ import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 
 import com.opencsv.CSVReader;
 import com.solutionstar.swaftee.CustomExceptions.MyCoreExceptions;
-import com.solutionstar.swaftee.constants.WebDriverConstants;
 import com.solutionstar.swaftee.utils.CSVParserUtils;
+import com.solutionstar.swaftee.utils.CommonUtils;
 import com.solutionstar.swaftee.webdriverhelpers.BaseDriverHelper;
 
 
@@ -38,37 +30,11 @@ public class AppDriver extends TestListenerAdapter {
 	
 	BaseDriverHelper baseDriverHelper = new BaseDriverHelper();
 	CSVParserUtils csvParser = new CSVParserUtils();
-	
-	 @Override
-	  public void onTestFailure(ITestResult testResult) 
-	  {
-		  
-		  captureBrowserScreenShot(testResult.getName(),getDriverfromResult(testResult));
-		  logger.info("Test " + testResult.getName() + "' FAILED");
-	  }
-	  @Override
-	  public void onTestSuccess(ITestResult testResult) 
-	  {
-		  logger.info("Test : " + testResult.getName() + "' PASSED");
-	  }
-	  public void captureBrowserScreenShot(String imageName, WebDriver webDriver)
-	  {
-		  DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-		  Date date = new Date();
-		  String curDate = dateFormat.format(date);
-		  screenShot( WebDriverConstants.PATH_TO_BROWSER_SCREENSHOT + imageName + curDate+".jpg", webDriver); 
-	  }
-	
-	  public WebDriver getDriverfromResult(ITestResult testResult)
-	  {
-		  Object currentClass = testResult.getInstance();
-	      return ((AppDriver) currentClass).getDriver();
-	  }
-	@BeforeClass
-	public void startBaseDriver() throws InterruptedException
+	CommonUtils utils = new CommonUtils();
+	  
+	public WebDriver getDriver()
 	{
-		logger.info("Starting BaseDrivers");
-	   
+		logger.info("Starting BaseDriver");	   
 	    try 
 	    {
 	    	baseDriverHelper.startServer();
@@ -76,29 +42,12 @@ public class AppDriver extends TestListenerAdapter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	  public void screenShot(String fileName, WebDriver webDriver) 
-	  {
-	      File scrFile = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
-	      try 
-	      {
-	        FileUtils.copyFile(scrFile, new File(fileName));
-	      } 
-	      catch (IOException e) 
-	      {
-	    	  e.printStackTrace();
-	    	  logger.info("Error While taking Screen Shot");
-	      }
-	  }
-	
-	public WebDriver getDriver()
-	{
 		return baseDriverHelper.getDriver();
 	}
 	
 	public WebDriver getSecondaryDriver() 
 	{
+		logger.info("Starting Secondary Driver");	 
 		try 
 		{
 			if(baseDriverHelper.getSecondaryDriver() == null)
@@ -213,18 +162,37 @@ public class AppDriver extends TestListenerAdapter {
 		return data;
 	}
 
+	@Override
+	public void onTestFailure(ITestResult testResult) 
+	{
+	  
+		utils.captureBrowserScreenShot(testResult.getName(), getDriverfromResult(testResult));
+		logger.info("Test " + testResult.getName() + "' FAILED");
+	}
+	
+	@Override
+	public void onTestSuccess(ITestResult testResult) 
+	{
+		logger.info("Test : " + testResult.getName() + "' PASSED");
+	}
+	
+	public WebDriver getDriverfromResult(ITestResult testResult)
+	{
+		  Object currentClass = testResult.getInstance();
+	      return ((AppDriver) currentClass).getDriver();
+	}
 	protected void stopDriver() 
 	{
 	    baseDriverHelper.stopDriver();
-     }
-
-	  public void setDriver(WebDriver driver) 
-	  {
-		  baseDriverHelper.setDriver(driver);
-	  }
+    }
+	
+	public void setDriver(WebDriver driver) 
+	{
+		baseDriverHelper.setDriver(driver);
+	}
 	  
-	  public void setSecondaryDriver(WebDriver driver) 
-	  {
-		  baseDriverHelper.setSecondaryDriver(driver);
-	  }
+	public void setSecondaryDriver(WebDriver driver) 
+	{
+		baseDriverHelper.setSecondaryDriver(driver);
+	 }
  }

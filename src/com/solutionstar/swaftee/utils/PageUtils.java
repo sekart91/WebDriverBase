@@ -48,7 +48,6 @@ public class PageUtils
 		      }
 		    });
 			return;
-		
 	}
 	
 	public boolean verifyDropDownElements(WebElement drpdown, List<String> listExpected) 
@@ -106,5 +105,4 @@ public class PageUtils
 		    }
 		    return false;
 	  }
-
 }

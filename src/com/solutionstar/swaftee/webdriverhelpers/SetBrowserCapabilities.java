@@ -2,7 +2,6 @@ package com.solutionstar.swaftee.webdriverhelpers;
 
 import java.io.File;
 
-import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
