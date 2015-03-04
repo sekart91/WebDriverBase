@@ -2,48 +2,32 @@ package com.solutionstar.swaftee.webdriverbase;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.james.mime4j.field.datetime.DateTime;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Point;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 
-import com.google.common.base.Function;
 import com.solutionstar.swaftee.constants.WebDriverConstants;
 import com.solutionstar.swaftee.utils.PageUtils;
-import com.solutionstar.swaftee.webdriverFactory.AppDriver;
 
 public class AppPage extends TestListenerAdapter 
 {
+	 protected static Logger logger = LoggerFactory.getLogger(AppPage.class.getName());
 	 WebDriver driver;
-	 protected static Logger logger = LoggerFactory.getLogger(AppDriver.class.getName());
+	 
+	 enum ByTypes{
+		  index, value,text
+	 } 
 	 
 	 public AppPage(WebDriver driver)
 	 {
@@ -52,7 +36,7 @@ public class AppPage extends TestListenerAdapter
 	 }
 	 protected static Object initializeInBase(WebDriver driver) 
 	 {
-		System.out.println("inside initializeInBase");
+		logger.info("inside initializeInBase");
 		return driver;
 	 }
 	
@@ -149,7 +133,7 @@ public class AppPage extends TestListenerAdapter
 	      catch (IOException e) 
 	      {
 	    	  e.printStackTrace();
-	    	  logger.info("Error While taking Screen Shot");
+	    	  logger.error("Error While taking Screen Shot");
 	      }
 	  }
 	  
@@ -171,11 +155,4 @@ public class AppPage extends TestListenerAdapter
 
 		  }
 	  }
-	  
-	  enum ByTypes
-		{
-		  index, value,text
-	    } 
-		
-
 }
