@@ -24,11 +24,10 @@ public class CommonUtils {
 			 {
 				 for(int i = 0; i < listOfFiles.length; i++)
 				 {
-					 if(listOfFiles[i].getName().contains(fileName) && listOfFiles[i].canExecute())
+					 if(listOfFiles[i].getName().contains(fileName)) // && listOfFiles[i].canExecute()) TODO : can executable check failing in mac os, have to find a way to execute it in mac
 						 return listOfFiles[i];
 				 }
-			 }
-			
+			 }			
 		 }catch(Exception e){
 			 e.printStackTrace();
 		 }

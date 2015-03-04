@@ -4,11 +4,10 @@ import java.io.FileReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import com.opencsv.CSVReader;
 import com.solutionstar.swaftee.CustomExceptions.MyCoreExceptions;
-import com.solutionstar.swaftee.constants.CSVParserConstants;
+import com.solutionstar.swaftee.constants.WebDriverConstants;
 
 public class CSVParserUtils {
 	
@@ -33,7 +32,7 @@ public class CSVParserUtils {
 			 if(utils == null)
 				 System.out.println("Utils obj is null");
 			 
-			 CSVReader reader = new CSVReader(new FileReader(utils.getCurrentWorkingDirectory() + CSVParserConstants.PATH_TO_FILE + fileName + ".csv"));
+			 CSVReader reader = new CSVReader(new FileReader(utils.getCurrentWorkingDirectory() + WebDriverConstants.PATH_TO_TEST_DATA_FILE + fileName + ".csv"));
 			 List<String[]> rowEntries = reader.readAll();
 			 for(String[] row : rowEntries)
 			 {
@@ -57,7 +56,7 @@ public class CSVParserUtils {
 	{
 		try{
 			 initializeConstans();
-			 CSVReader reader = new CSVReader(new FileReader(utils.getCurrentWorkingDirectory() + CSVParserConstants.PATH_TO_FILE + fileName + ".csv"));
+			 CSVReader reader = new CSVReader(new FileReader(utils.getCurrentWorkingDirectory() + WebDriverConstants.PATH_TO_TEST_DATA_FILE + fileName + ".csv"));
 			 List<String[]> rowEntries = reader.readAll();
 			 
 			 if(rowEntries.get(0).length < columnNumber)
@@ -86,7 +85,7 @@ public class CSVParserUtils {
 		try{
 			 initializeConstans();
 			 int columnNumber = -1;
-			 CSVReader reader = new CSVReader(new FileReader(utils.getCurrentWorkingDirectory() + CSVParserConstants.PATH_TO_FILE + fileName + ".csv"));
+			 CSVReader reader = new CSVReader(new FileReader(utils.getCurrentWorkingDirectory() + WebDriverConstants.PATH_TO_TEST_DATA_FILE + fileName + ".csv"));
 			 List<String[]> rowEntries = reader.readAll();
 			 
 			 columnNumber = Arrays.asList(rowEntries.get(0)).indexOf(columnName);
@@ -117,7 +116,7 @@ public class CSVParserUtils {
 		try{
 			 initializeConstans();
 			 Integer[] columnNumber = new Integer[keyArray.length] ;
-			 CSVReader reader = new CSVReader(new FileReader(utils.getCurrentWorkingDirectory() + CSVParserConstants.PATH_TO_FILE + fileName + ".csv"));
+			 CSVReader reader = new CSVReader(new FileReader(utils.getCurrentWorkingDirectory() + WebDriverConstants.PATH_TO_TEST_DATA_FILE + fileName + ".csv"));
 			 List<String[]> rowEntries = reader.readAll();
 			 
 			 for(int i=0; i< keyArray.length; i++)
@@ -152,12 +151,11 @@ public class CSVParserUtils {
 		return csvDataHash;
 	}
 	
-	@SuppressWarnings("resource")
 	public HashMap<String, String[]> getCSVDataHash(String fileName, Integer[] keyArray)
 	{
 		try{
 			 initializeConstans();
-			 CSVReader reader = new CSVReader(new FileReader(utils.getCurrentWorkingDirectory() + CSVParserConstants.PATH_TO_FILE + fileName + ".csv"));
+			 CSVReader reader = new CSVReader(new FileReader(utils.getCurrentWorkingDirectory() + WebDriverConstants.PATH_TO_TEST_DATA_FILE + fileName + ".csv"));
 			 List<String[]> rowEntries = reader.readAll();
 			
 			 for(String[] row : rowEntries)
