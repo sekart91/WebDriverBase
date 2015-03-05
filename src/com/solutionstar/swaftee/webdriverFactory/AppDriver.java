@@ -4,9 +4,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -37,14 +40,25 @@ public class AppDriver extends TestListenerAdapter {
 		logger.info("Starting BaseDriver");	   
 	    try 
 	    {
-	    	baseDriverHelper.startServer();
-			baseDriverHelper.startDriver();
+	    	if(baseDriverHelper.getDriver() == null)
+	    	{
+		    	baseDriverHelper.startServer();
+				baseDriverHelper.startDriver();
+	    	}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return baseDriverHelper.getDriver();
 	}
 	
+	public boolean hasDriver()
+	{
+		return baseDriverHelper.getDriver() == null? false:true;
+	}
+	public boolean hasSecondaryDriver()
+	{
+		return baseDriverHelper.getSecondaryDriver() == null? false:true;
+	}
 	public WebDriver getSecondaryDriver() 
 	{
 		logger.info("Starting Secondary Driver");	 
@@ -165,22 +179,54 @@ public class AppDriver extends TestListenerAdapter {
 	@Override
 	public void onTestFailure(ITestResult testResult) 
 	{
-	  
-		utils.captureBrowserScreenShot(testResult.getName(), getDriverfromResult(testResult));
-		logger.info("Test " + testResult.getName() + "' FAILED");
+	   try 
+	   {
+		   logger.info("Test " + testResult.getName() + "' FAILED");
+		   List<WebDriver> drivers = getDriverfromResult(testResult);
+		   for(WebDriver driver : drivers)
+		   {
+			   utils.captureBrowserScreenShot(testResult.getName(), driver);
+			   baseDriverHelper.ExtractJSLogs(driver);
+		   }
+	   } 
+	   catch (MyCoreExceptions e) 
+	   {
+			e.printStackTrace();
+	   }
 	}
 	
 	@Override
 	public void onTestSuccess(ITestResult testResult) 
 	{
-		logger.info("Test : " + testResult.getName() + "' PASSED");
+		 try 
+		   {
+				logger.info("Test : " + testResult.getName() + "' PASSED");
+				 List<WebDriver> drivers = getDriverfromResult(testResult);
+				 for(WebDriver driver : drivers)
+					   baseDriverHelper.ExtractJSLogs(driver);
+		   } 
+		   catch (MyCoreExceptions e) 
+		   {
+				e.printStackTrace();
+		   }
 	}
 	
-	public WebDriver getDriverfromResult(ITestResult testResult)
+	public List<WebDriver> getDriverfromResult(ITestResult testResult)
+	{
+		List<WebDriver> driverList = new ArrayList<WebDriver>();
+		if(getAppDriver(testResult).hasDriver())
+			driverList.add(getAppDriver(testResult).getDriver());
+		if(getAppDriver(testResult).hasSecondaryDriver())
+			driverList.add(getAppDriver(testResult).getSecondaryDriver());
+		return driverList;
+	}
+	
+	protected AppDriver getAppDriver(ITestResult testResult)
 	{
 		  Object currentClass = testResult.getInstance();
-	      return ((AppDriver) currentClass).getDriver();
+	      return ((AppDriver) currentClass);
 	}
+	
 	protected void stopDriver() 
 	{
 	    baseDriverHelper.stopDriver();

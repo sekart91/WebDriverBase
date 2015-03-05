@@ -1,7 +1,15 @@
 package com.solutionstar.swaftee.webdriverhelpers;
 
 import java.io.File;
+import java.util.logging.Level;
 
+import net.jsourcerer.webdriver.jserrorcollector.JavaScriptError;
+
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +41,10 @@ public class SetBrowserCapabilities {
    			}
    			System.setProperty("webdriver.chrome.driver", chromeDriver.getAbsolutePath());
    		    cap = DesiredCapabilities.chrome();
-	   
+   		    LoggingPreferences loggingprefs = new LoggingPreferences();
+   		    loggingprefs.enable(LogType.BROWSER, Level.ALL);
+   		    cap.setCapability(CapabilityType.LOGGING_PREFS, loggingprefs);
+      
    		}catch(Exception e){
    			e.printStackTrace();
    		}
@@ -43,7 +54,10 @@ public class SetBrowserCapabilities {
    	public DesiredCapabilities setFirefoxDriver(DesiredCapabilities cap)
    	{
    		try{
-   			cap = DesiredCapabilities.firefox();   	     
+   			final FirefoxProfile profile = new FirefoxProfile();
+   			JavaScriptError.addExtension(profile);
+   			cap = DesiredCapabilities.firefox();
+   			cap.setCapability(FirefoxDriver.PROFILE, profile);
    		}catch(Exception e){
    			e.printStackTrace();
    		}
