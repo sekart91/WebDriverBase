@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -182,12 +183,7 @@ public class AppDriver extends TestListenerAdapter {
 	   try 
 	   {
 		   logger.info("Test " + testResult.getName() + "' FAILED");
-		   List<WebDriver> drivers = getDriverfromResult(testResult);
-		   for(WebDriver driver : drivers)
-		   {
-			   utils.captureBrowserScreenShot(testResult.getName(), driver);
-			   baseDriverHelper.ExtractJSLogs(driver);
-		   }
+			processResults(testResult,true);
 	   } 
 	   catch (MyCoreExceptions e) 
 	   {
@@ -201,9 +197,7 @@ public class AppDriver extends TestListenerAdapter {
 		 try 
 		   {
 				logger.info("Test : " + testResult.getName() + "' PASSED");
-				 List<WebDriver> drivers = getDriverfromResult(testResult);
-				 for(WebDriver driver : drivers)
-					   baseDriverHelper.ExtractJSLogs(driver);
+				processResults(testResult,false);
 		   } 
 		   catch (MyCoreExceptions e) 
 		   {
@@ -211,13 +205,23 @@ public class AppDriver extends TestListenerAdapter {
 		   }
 	}
 	
-	public List<WebDriver> getDriverfromResult(ITestResult testResult)
+	private void processResults(ITestResult testResult,boolean takeScreenShot) throws MyCoreExceptions
 	{
-		List<WebDriver> driverList = new ArrayList<WebDriver>();
+		 Map<String,WebDriver> drivers = getDriverfromResult(testResult);
+		 for(String driverType : drivers.keySet())
+		 {
+			   baseDriverHelper.ExtractJSLogs(drivers.get(driverType),driverType);
+			   if(takeScreenShot)  utils.captureBrowserScreenShot(testResult.getName(), drivers.get(driverType));
+		 }
+	}
+	
+	public Map<String, WebDriver> getDriverfromResult(ITestResult testResult)
+	{
+		Map<String, WebDriver> driverList = new HashMap<String,WebDriver>();
 		if(getAppDriver(testResult).hasDriver())
-			driverList.add(getAppDriver(testResult).getDriver());
+			driverList.put("primary",getAppDriver(testResult).getDriver());
 		if(getAppDriver(testResult).hasSecondaryDriver())
-			driverList.add(getAppDriver(testResult).getSecondaryDriver());
+			driverList.put("secondary",getAppDriver(testResult).getSecondaryDriver());
 		return driverList;
 	}
 	

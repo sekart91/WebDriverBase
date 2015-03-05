@@ -344,9 +344,9 @@ public class BaseDriverHelper {
 		        	logger.info(new Date(entry.getTimestamp()) + " " + entry.getLevel() + " " + entry.getMessage());
 		 }
 
-		public void ExtractJSLogs(WebDriver driver) throws MyCoreExceptions 
+		public void ExtractJSLogs(WebDriver driver, String driverType) throws MyCoreExceptions 
 		{
-				ExtractDriverJSErrors(driver,getBrowserName("primary"));
+				ExtractDriverJSErrors(driver,getBrowserName(driverType));
 		}
 
 		private void ExtractDriverJSErrors(WebDriver driver, String browserName) 
