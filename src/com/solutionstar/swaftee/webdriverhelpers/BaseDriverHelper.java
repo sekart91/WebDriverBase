@@ -1,8 +1,13 @@
 package com.solutionstar.swaftee.webdriverhelpers;
 
 import java.lang.reflect.InvocationTargetException;
+
+import net.jsourcerer.webdriver.jserrorcollector.JavaScriptError;
+
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -15,6 +20,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -182,10 +190,10 @@ public class BaseDriverHelper {
 			String os = System.getProperty("webdriver.platform.os",WebDriverConstants.DEFAULT_BROWSER_OS);
 			switch(WebDriverConstants.OperatingSystem.valueOf(os.toLowerCase()))
 			{
-			case windows:
-				return Platform.WINDOWS;
-			case mac:
-				return Platform.MAC;
+				case windows:
+					return Platform.WINDOWS;
+				case mac:
+					return Platform.MAC;
 			}
 			return null;
 	   }
@@ -327,5 +335,36 @@ public class BaseDriverHelper {
 		{
 			  Object currentClass = testResult.getInstance();
 		      return ((AppDriver) currentClass).getDriver();
+		}
+		 public void ExtractChromeJSLogs(WebDriver driver) 
+		 {
+			 	logger.info("JS Errors");
+		        LogEntries logEntries = driver.manage().logs().get(LogType.BROWSER);
+		        for (LogEntry entry : logEntries) 
+		        	logger.info(new Date(entry.getTimestamp()) + " " + entry.getLevel() + " " + entry.getMessage());
+		 }
+
+		public void ExtractJSLogs(WebDriver driver, String driverType) throws MyCoreExceptions 
+		{
+				ExtractDriverJSErrors(driver,getBrowserName(driverType));
+		}
+
+		private void ExtractDriverJSErrors(WebDriver driver, String browserName) 
+		{
+			switch (WebDriverConstants.BrowserNames.valueOf(browserName))
+		    {
+			     case chrome:
+			        ExtractChromeJSLogs(driver);
+		   			break;
+				case firefox:
+					ExtractFFJSLogs(driver);
+		   			break;
+			}
+		}
+
+		private void ExtractFFJSLogs(WebDriver driver) 
+		{
+			final List<JavaScriptError> jsErrors = JavaScriptError.readErrors(driver);
+			logger.info(jsErrors.toString());
 		}
 }
